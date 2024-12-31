@@ -25,7 +25,7 @@ A role-based task management system built with Next.js 14, TypeScript, and shadc
 1. Clone the repository:
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/abdurshd/task-management-system.git
 cd task-management-system
 ```
 
@@ -156,11 +156,6 @@ src/
 4. Assignee Role Check Test
    - Verify correct assignee options based on role
 
-## Environment Variables
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:3000/api
-```
 
 ## API Routes
 
@@ -177,11 +172,3 @@ Using Zustand for state management with the following stores:
 - AuthStore: Handles user authentication and role management
 - TaskStore: Manages task list and operations
 - UserStore: Manages user list and operations
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
