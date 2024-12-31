@@ -1,0 +1,162 @@
+[
+    {
+        "userName": "Jeffrey Villanueva",
+        "userPhone": "+82 010-3798-1059",
+        "userEmail": "eobrien@example.org",
+        "userRole": "Admin",
+        "createdAt": "2024-08-26T13:55:35.833919",
+        "lastLoggedInAt": "2024-08-26T13:55:35.833922"
+    },
+    {
+        "userName": "Brian Hartman",
+        "userPhone": "+82 010-6442-7932",
+        "userEmail": "meganlewis@example.com",
+        "userRole": "Admin",
+        "createdAt": "2024-08-26T13:55:35.834113",
+        "lastLoggedInAt": "2024-08-26T13:55:35.834114"
+    },
+    {
+        "userName": "Julie Johnson",
+        "userPhone": "+82 010-4267-5472",
+        "userEmail": "morrislucas@example.org",
+        "userRole": "RegularUser",
+        "createdAt": "2024-08-26T13:55:35.834285",
+        "lastLoggedInAt": "2024-08-26T13:55:35.834286"
+    },
+    {
+        "userName": "James Hanson",
+        "userPhone": "+82 010-2181-3433",
+        "userEmail": "nlynch@example.org",
+        "userRole": "Viewer",
+        "createdAt": "2024-08-26T13:55:35.834410",
+        "lastLoggedInAt": "2024-08-26T13:55:35.834410"
+    },
+    {
+        "userName": "Linda Everett",
+        "userPhone": "+82 010-3958-3904",
+        "userEmail": "gordonmichael@example.net",
+        "userRole": "Admin",
+        "createdAt": "2024-08-26T13:55:35.834618",
+        "lastLoggedInAt": "2024-08-26T13:55:35.834619"
+    },
+    {
+        "userName": "Carol Bowman",
+        "userPhone": "+82 010-6031-6923",
+        "userEmail": "debragriffin@example.net",
+        "userRole": "RegularUser",
+        "createdAt": "2024-08-26T13:55:35.834785",
+        "lastLoggedInAt": "2024-08-26T13:55:35.834786"
+    },
+    {
+        "userName": "Mitchell Gutierrez",
+        "userPhone": "+82 010-9408-6659",
+        "userEmail": "calvinnewman@example.net",
+        "userRole": "Viewer",
+        "createdAt": "2024-08-26T13:55:35.834947",
+        "lastLoggedInAt": "2024-08-26T13:55:35.834948"
+    },
+    {
+        "userName": "Michelle Moreno DVM",
+        "userPhone": "+82 010-5463-2628",
+        "userEmail": "emma78@example.net",
+        "userRole": "PrimeUser",
+        "createdAt": "2024-08-26T13:55:35.835060",
+        "lastLoggedInAt": "2024-08-26T13:55:35.835060"
+    },
+    {
+        "userName": "Adam Kelly",
+        "userPhone": "+82 010-9023-3348",
+        "userEmail": "matadonald@example.org",
+        "userRole": "PrimeUser",
+        "createdAt": "2024-08-26T13:55:35.835223",
+        "lastLoggedInAt": "2024-08-26T13:55:35.835223"
+    },
+    {
+        "userName": "Elizabeth Hodge",
+        "userPhone": "+82 010-9463-7118",
+        "userEmail": "lwalker@example.net",
+        "userRole": "PrimeUser",
+        "createdAt": "2024-08-26T13:55:35.835355",
+        "lastLoggedInAt": "2024-08-26T13:55:35.835356"
+    },
+    {
+        "userName": "Paul Davidson",
+        "userPhone": "+82 010-4957-3629",
+        "userEmail": "florespatrick@example.net",
+        "userRole": "Viewer",
+        "createdAt": "2024-08-26T13:55:35.835524",
+        "lastLoggedInAt": "2024-08-26T13:55:35.835525"
+    },
+    {
+        "userName": "Jay Tate",
+        "userPhone": "+82 010-9598-2789",
+        "userEmail": "harrischristina@example.com",
+        "userRole": "Viewer",
+        "createdAt": "2024-08-26T13:55:35.835689",
+        "lastLoggedInAt": "2024-08-26T13:55:35.835690"
+    },
+    {
+        "userName": "Sara Ellis",
+        "userPhone": "+82 010-1928-1714",
+        "userEmail": "tamarajordan@example.net",
+        "userRole": "RegularUser",
+        "createdAt": "2024-08-26T13:55:35.835855",
+        "lastLoggedInAt": "2024-08-26T13:55:35.835855"
+    },
+    {
+        "userName": "Brandon Brown",
+        "userPhone": "+82 010-2090-5929",
+        "userEmail": "ywhite@example.com",
+        "userRole": "PrimeUser",
+        "createdAt": "2024-08-26T13:55:35.835976",
+        "lastLoggedInAt": "2024-08-26T13:55:35.835977"
+    },
+    {
+        "userName": "Carol Wall",
+        "userPhone": "+82 010-4560-8362",
+        "userEmail": "vanessa84@example.org",
+        "userRole": "RegularUser",
+        "createdAt": "2024-08-26T13:55:35.836083",
+        "lastLoggedInAt": "2024-08-26T13:55:35.836083"
+    },
+    {
+        "userName": "Victoria Graves",
+        "userPhone": "+82 010-2371-8539",
+        "userEmail": "andersonjoshua@example.net",
+        "userRole": "Viewer",
+        "createdAt": "2024-08-26T13:55:35.836252",
+        "lastLoggedInAt": "2024-08-26T13:55:35.836253"
+    },
+    {
+        "userName": "Jacob Duffy",
+        "userPhone": "+82 010-3537-8585",
+        "userEmail": "uporter@example.org",
+        "userRole": "Admin",
+        "createdAt": "2024-08-26T13:55:35.836373",
+        "lastLoggedInAt": "2024-08-26T13:55:35.836374"
+    },
+    {
+        "userName": "Krystal Weaver",
+        "userPhone": "+82 010-3567-4169",
+        "userEmail": "tkelly@example.org",
+        "userRole": "Admin",
+        "createdAt": "2024-08-26T13:55:35.836496",
+        "lastLoggedInAt": "2024-08-26T13:55:35.836497"
+    },
+    {
+        "userName": "Steven Romero",
+        "userPhone": "+82 010-4212-9925",
+        "userEmail": "elijahcook@example.com",
+        "userRole": "Admin",
+        "createdAt": "2024-08-26T13:55:35.836664",
+        "lastLoggedInAt": "2024-08-26T13:55:35.836665"
+    },
+    {
+        "userName": "Michelle Bell",
+        "userPhone": "+82 010-6459-6730",
+        "userEmail": "roger88@example.com",
+        "userRole": "PrimeUser",
+        "createdAt": "2024-08-26T13:55:35.836783",
+        "lastLoggedInAt": "2024-08-26T13:55:35.836783"
+    }
+]
