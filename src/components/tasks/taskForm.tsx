@@ -72,7 +72,7 @@ export function TaskForm() {
         taskDescription: `[${data.taskType}] ${data.taskName}`,
         completedAt: null
       });
-      toast({ title: 'Task created successfully' });
+      toast({ title: 'Task created successfully', variant: 'success' });
       form.reset();
     } catch (error) {
       console.error(error);

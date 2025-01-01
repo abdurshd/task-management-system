@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
 // import { Sidebar } from '@/components/layout/sidebar';
 // import { TopNav } from '@/components/layout/top-nav';
 
@@ -30,13 +31,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="flex">
-          {/* <Sidebar />
-          <div className="flex-1">
-            <TopNav /> */}
             <main>
               {children}
             </main>
-          {/* </div> */}
+            <Toaster  />
         </div>
       </body>
     </html>

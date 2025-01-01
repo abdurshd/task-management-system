@@ -7,7 +7,7 @@ export default function DashboardLayout({children}: Readonly<{
     return (
         <div className="flex">
             <Sidebar />
-            <div className="flex-1">
+            <div>
                 <TopNav />
                 <main className="p-8">
                     {children}

@@ -15,17 +15,20 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { TaskForm } from './taskForm';
-import { TaskStatus, TaskType, TaskSearchFields } from '@/lib/types/task';
+import { TaskStatus, TaskType, TaskSearchFields, Task } from '@/lib/types/task';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useAuthStore } from '@/lib/store/auth-store';
 
 export function TaskList() {
   const { 
     filteredTasks, 
     setTasks,
     setFilters 
-  } = useTaskStore();
-  const statuses: TaskStatus[] = ['Created', 'In Progress', 'Done', 'Delayed'];
-  const types: TaskType[] = ['물품구매', '택배요청'];
+  } = useTaskStore();    
+  const { user } = useAuthStore();
+
+  const statuses: TaskStatus[] = Array.from(new Set(filteredTasks.map(task => task.status))); // TODO: this is supposed to be dynamic statuses instead of hardcoded statuses. the statuses should be unique statuses from the filteredTasks list's status field. Now it is not working well.
+  const types: TaskType[] = Array.from(new Set(filteredTasks.map(task => task.taskType))); // TODO: this is supposed to be dynamic types instead of hardcoded types. the types should be unique types from the filteredTasks list's taskType field. Now it is not working well. 
   const [selectedStatuses, setSelectedStatuses] = useState<TaskStatus[]>(statuses);
   const [selectedTypes, setSelectedTypes] = useState<TaskType[]>(types);
   const [searchField, setSearchField] = useState<TaskSearchFields>('taskName');
@@ -43,13 +46,29 @@ export function TaskList() {
         const response = await fetch('/api/tasks');
         if (!response.ok) throw new Error('Failed to fetch tasks');
         const tasks = await response.json();
-        setTasks(tasks);
+
+        let filteredTasks = tasks;
+
+        // RegularUser 본인이 생성한 Task 리스트 노출
+        if (user?.userRole === 'RegularUser') {
+          filteredTasks = tasks.filter((t: Task) => t.reporter === user.userName);
+          // Viewer  본인한테 할당된 Task 만 노출
+        } else if (user?.userRole === 'Viewer') {
+          filteredTasks = tasks.filter((t: Task) => t.assignee === user.userName);
+        }
+  
+        setTasks(filteredTasks);
+
+        setFilters({ 
+          status: selectedStatuses,
+          type: selectedTypes 
+        });
       } catch (error) {
         console.error('Error fetching tasks:', error);
       }
     };
     fetchTasks();
-  }, [setTasks]);
+  }, [setTasks, user, selectedStatuses, selectedTypes, setFilters]);
 
   const handleStatusChange = (status: TaskStatus | 'ALL', checked: boolean) => {
     const newStatuses = status === 'ALL'
@@ -103,7 +122,7 @@ export function TaskList() {
           />
           <Dialog>
             <DialogTrigger asChild>
-              <Button>Create Task</Button>
+              <Button disabled={user?.userRole === 'Viewer'}>Create Task</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
