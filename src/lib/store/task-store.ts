@@ -1,77 +1,110 @@
+// src/lib/store/task-store.ts
 import { create } from 'zustand';
-import { Task, TaskStatus, TaskType } from '../types/task';
+import { Task, TaskStatus, TaskType } from '@/lib/types/task';
+// import { UserRole } from '@/lib/types/user';
+import { useAuthStore } from './auth-store';
 
 interface TaskState {
   tasks: Task[];
   filteredTasks: Task[];
-  statusFilter: TaskStatus | 'ALL';
-  typeFilter: TaskType | 'ALL';
-  searchTerm: string;
+  isLoading: boolean;
+  error: Error | null;
+  filters: {
+    status: TaskStatus[];
+    type: TaskType[];
+    searchTerm: string;
+    searchField: keyof Pick<Task, 'taskName' | 'reporter' | 'assignee'>;
+  };
+  setFilters: (filters: Partial<TaskState['filters']>) => void;
+  createTask: (task: Omit<Task, 'id' | 'createdAt'>) => Promise<void>;
+  fetchTasks: () => Promise<void>;
   setTasks: (tasks: Task[]) => void;
-  setStatusFilter: (status: TaskStatus | 'ALL') => void;
-  setTypeFilter: (type: TaskType | 'ALL') => void;
-  setSearchTerm: (term: string) => void;
-  createTask: (task: Omit<Task, 'createdAt' | 'completedAt'>) => void;
-  filterTasks: () => void;
 }
 
 export const useTaskStore = create<TaskState>((set, get) => ({
   tasks: [],
   filteredTasks: [],
-  statusFilter: 'ALL',
-  typeFilter: 'ALL',
-  searchTerm: '',
-  
-  setTasks: (tasks) => {
-    set({ tasks });
-    get().filterTasks();
+  isLoading: false,
+  error: null,
+  filters: {
+    status: [],
+    type: [],
+    searchTerm: '',
+    searchField: 'taskName'
   },
   
-  setStatusFilter: (status) => {
-    set({ statusFilter: status });
-    get().filterTasks();
-  },
-  
-  setTypeFilter: (type) => {
-    set({ typeFilter: type });
-    get().filterTasks();
-  },
-  
-  setSearchTerm: (term) => {
-    set({ searchTerm: term });
-    get().filterTasks();
-  },
-  
-  createTask: (task) => {
-    const newTask = {
-      ...task,
-      createdAt: new Date().toISOString(),
-      completedAt: null,
-    };
-    set(state => ({ tasks: [...state.tasks, newTask] }));
-    get().filterTasks();
-  },
-  
-  filterTasks: () => {
-    const { tasks, statusFilter, typeFilter, searchTerm } = get();
+  setFilters: (newFilters) => {
+    const { tasks } = get();
+    const filters = { ...get().filters, ...newFilters };
     
-    let filtered = tasks;
+    let filtered = [...tasks];
     
-    if (statusFilter !== 'ALL') {
-      filtered = filtered.filter(task => task.status === statusFilter);
+    if (filters.status.length) {
+      filtered = filtered.filter(task => filters.status.includes(task.status));
     }
     
-    if (typeFilter !== 'ALL') {
-      filtered = filtered.filter(task => task.taskType === typeFilter);
+    if (filters.type.length) {
+      filtered = filtered.filter(task => filters.type.includes(task.taskType));
     }
     
-    if (searchTerm) {
+    if (filters.searchTerm) {
+      const term = filters.searchTerm.toLowerCase();
       filtered = filtered.filter(task => 
-        task.taskName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        task.assignee.toLowerCase().includes(searchTerm.toLowerCase())
+        task[filters.searchField].toLowerCase().includes(term)
       );
     }
     
-    set({ filteredTasks: filtered });
+    // Role-based filtering
+    const user = useAuthStore.getState().user;
+    if (user?.userRole !== 'Admin' && user?.userRole !== 'PrimeUser') {
+      filtered = filtered.filter(task => {
+        if (user?.userRole === 'RegularUser') {
+          return task.reporter === user?.userName;
+        }
+        return task.assignee === user?.userName;
+      });
+    }
+    
+    set({ filters, filteredTasks: filtered });
   },
+  
+  createTask: async (task) => {
+    try {
+      set({ isLoading: true });
+      const response = await fetch('/api/tasks', {
+        method: 'POST',
+        body: JSON.stringify(task)
+      });
+      
+      if (!response.ok) throw new Error('Failed to create task');
+      
+      await get().fetchTasks();
+    } catch (error) {
+      set({ error: error as Error });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+  
+  fetchTasks: async () => {
+    try {
+      set({ isLoading: true });
+      const response = await fetch('/api/tasks');
+      if (!response.ok) throw new Error('Failed to fetch tasks');
+      
+      const tasks = await response.json();
+      set({ tasks, filteredTasks: tasks });
+      get().setFilters({}); // Reapply filters
+    } catch (error) {
+      set({ error: error as Error });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+  
+  setTasks: (tasks) => {
+    set({ tasks });
+  }
 }));
