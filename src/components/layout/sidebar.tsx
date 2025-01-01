@@ -5,10 +5,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Users, ClipboardList, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuthStore } from '@/lib/store/auth-store';
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
+  const { user } = useAuthStore();
 
   return (
     <div className={cn(
@@ -25,16 +27,18 @@ export function Sidebar() {
       </div>
       
       <nav className="space-y-2 p-4">
-        <Link 
-          href="/dashboard/users" 
-          className={cn(
-            "flex items-center text-white hover:bg-[#238377] rounded-lg p-2",
-            pathname === '/dashboard/users' && "bg-[#1b6868]"
-          )}
-        >
-          <Users className="h-5 w-5" />
-          {!collapsed && <span className="ml-2">Users</span>}
-        </Link>
+        {user?.userRole !== 'Viewer' && (
+          <Link 
+            href="/dashboard/users" 
+            className={cn(
+              "flex items-center text-white hover:bg-[#238377] rounded-lg p-2",
+              pathname === '/dashboard/users' && "bg-[#1b6868]"
+            )}
+          >
+            <Users className="h-5 w-5" />
+            {!collapsed && <span className="ml-2">Users</span>}
+          </Link>
+        )}
         <Link 
           href="/dashboard/tasks" 
           className={cn(
