@@ -1,5 +1,7 @@
 export type TaskStatus = 'Created' | 'In Progress' | 'Done' | 'Delayed';
 export type TaskType = '물품구매' | '택배요청';
+export type TaskSearchFields = 'taskName' | 'reporter' | 'taskDescription' | 'assignee';
+
 
 export interface Task {
   taskType: TaskType;

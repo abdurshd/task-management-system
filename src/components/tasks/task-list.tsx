@@ -15,7 +15,8 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { TaskForm } from './taskForm';
-import { TaskStatus, TaskType } from '@/lib/types/task';
+import { TaskStatus, TaskType, TaskSearchFields } from '@/lib/types/task';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export function TaskList() {
   const { 
@@ -23,15 +24,22 @@ export function TaskList() {
     setTasks,
     setFilters 
   } = useTaskStore();
-  const [selectedStatuses, setSelectedStatuses] = useState<TaskStatus[]>([]);
-  const [selectedTypes, setSelectedTypes] = useState<TaskType[]>([]);
-
   const statuses: TaskStatus[] = ['Created', 'In Progress', 'Done', 'Delayed'];
   const types: TaskType[] = ['물품구매', '택배요청'];
+  const [selectedStatuses, setSelectedStatuses] = useState<TaskStatus[]>(statuses);
+  const [selectedTypes, setSelectedTypes] = useState<TaskType[]>(types);
+  const [searchField, setSearchField] = useState<TaskSearchFields>('taskName');
+
+  useEffect(() => {
+    setFilters({ 
+      status: statuses,
+      type: types 
+    });
+  }, []);
 
   useEffect(() => {
     const fetchTasks = async () => {
-      try {
+      try { 
         const response = await fetch('/api/tasks');
         if (!response.ok) throw new Error('Failed to fetch tasks');
         const tasks = await response.json();
@@ -51,7 +59,7 @@ export function TaskList() {
         : selectedStatuses.filter(s => s !== status));
     
     setSelectedStatuses(newStatuses);
-    setFilters({ status: newStatuses.length ? newStatuses : [] });
+    setFilters({ status: newStatuses }); 
   };
 
   const handleTypeChange = (type: TaskType | 'ALL', checked: boolean) => {
@@ -62,21 +70,40 @@ export function TaskList() {
         : selectedTypes.filter(t => t !== type));
     
     setSelectedTypes(newTypes);
-    setFilters({ type: newTypes.length ? newTypes : [] });
+    setFilters({ type: newTypes});
+  };
+
+  const handleSearchFieldChange = (value: TaskSearchFields) => {
+    setSearchField(value);
+    setFilters({ searchField: value });
   };
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <div className="flex flex-row items-center gap-4">
+          <Select 
+            value={searchField}
+            onValueChange={(value) => handleSearchFieldChange(value as TaskSearchFields)}
+          >
+            <SelectTrigger>
+              <SelectValue defaultValue="taskName"/>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="taskName">Task Name</SelectItem>
+              <SelectItem value="reporter">Reporter</SelectItem>
+              <SelectItem value="taskDescription">Description</SelectItem>
+              <SelectItem value="assignee">담당자 (Assignee)</SelectItem>
+            </SelectContent>
+          </Select>
           <Input
-            placeholder="Search tasks..."
+            placeholder="Search"
             className="w-[200px]"
             onChange={(e) => setFilters({ searchTerm: e.target.value })}
           />
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="bg-[#2A9D8F] hover:bg-[#238377]">Create Task</Button>
+              <Button>Create Task</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -91,8 +118,17 @@ export function TaskList() {
         </div>
       </div>
 
-      <div className="flex gap-8">
-        <div className="space-y-2">
+      <div className="flex items-center text-[#289b9b] font-bold">
+        <span>Selected</span>
+        <span className="ml-1 flex items-center justify-center border-2 border-[#289b9b] rounded-full text-sm px-1">
+          {filteredTasks.length}
+        </span>
+      </div>
+
+      <hr className="border-t-[3px] border-[#949494] w-full p-0 m-0" />
+
+      <div className="flex flex-col">
+        <div className="flex space-x-2 mb-2">
           <h3 className="font-medium">Task Type</h3>
           <div className="flex items-center space-x-2">
             <Checkbox
@@ -114,9 +150,11 @@ export function TaskList() {
           ))}
         </div>
 
-        <div className="space-y-2">
-          <h3 className="font-medium">Status</h3>
-          <div className="flex items-center space-x-2">
+        <hr className="border-t border-[#e2e2e2] w-full p-0 m-0" />
+
+        <div className="flex space-x-2 mt-2">
+          <h3 className="font-medium">상태</h3>
+          <div className="flex fl items-center space-x-2">
             <Checkbox
               id="status-all"
               checked={selectedStatuses.length === statuses.length}
@@ -136,6 +174,7 @@ export function TaskList() {
           ))}
         </div>
       </div>
+      <hr className="border-t border-[#e2e2e2] w-full p-0 m-0" />
 
       <Table>
         <TableHeader>

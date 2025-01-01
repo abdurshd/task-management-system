@@ -1,6 +1,6 @@
 // src/lib/store/task-store.ts
 import { create } from 'zustand';
-import { Task, TaskStatus, TaskType } from '@/lib/types/task';
+import { Task, TaskSearchFields, TaskStatus, TaskType } from '@/lib/types/task';
 // import { UserRole } from '@/lib/types/user';
 import { useAuthStore } from './auth-store';
 
@@ -13,7 +13,7 @@ interface TaskState {
     status: TaskStatus[];
     type: TaskType[];
     searchTerm: string;
-    searchField: keyof Pick<Task, 'taskName' | 'reporter' | 'assignee'>;
+    searchField: TaskSearchFields;
   };
   setFilters: (filters: Partial<TaskState['filters']>) => void;
   createTask: (task: Omit<Task, 'id' | 'createdAt'>) => Promise<void>;
@@ -39,12 +39,18 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     
     let filtered = [...tasks];
     
-    if (filters.status.length) {
-      filtered = filtered.filter(task => filters.status.includes(task.status));
-    }
-    
-    if (filters.type.length) {
-      filtered = filtered.filter(task => filters.type.includes(task.taskType));
+    // 테스크 필터링 - 모든 상태나 모든 유형 비선택시 테스크 표시 안함
+    if (filters.status.length === 0 || filters.type.length === 0) {
+      filtered = [];
+    } else {
+      // 테스크 상태 필터링 - 모든 상태 선택 시 모든 테스크 표시
+      if (filters.status.length) {
+        filtered = filtered.filter(task => filters.status.includes(task.status));
+      }
+      
+      if (filters.type.length) {
+        filtered = filtered.filter(task => filters.type.includes(task.taskType));
+      }
     }
     
     if (filters.searchTerm) {
@@ -105,6 +111,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   },
   
   setTasks: (tasks) => {
-    set({ tasks });
+    set({ 
+      tasks,
+      filteredTasks: tasks
+    });
   }
 }));

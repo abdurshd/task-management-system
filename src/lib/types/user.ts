@@ -8,3 +8,5 @@ export interface User {
   createdAt: string;
   lastLoggedInAt: string;
 }
+
+export type UserSearchFields = 'userName' | 'userEmail' | 'userPhone';

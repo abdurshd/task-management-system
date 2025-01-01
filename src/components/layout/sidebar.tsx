@@ -12,7 +12,7 @@ export function Sidebar() {
 
   return (
     <div className={cn(
-      "h-screen bg-[#2A9D8F] transition-all duration-300",
+      "h-screen bg-[#289b9b] transition-all duration-300",
       collapsed ? "w-[60px]" : "w-[240px]"
     )}>
       <div className="flex justify-end p-2">
@@ -29,7 +29,7 @@ export function Sidebar() {
           href="/dashboard/users" 
           className={cn(
             "flex items-center text-white hover:bg-[#238377] rounded-lg p-2",
-            pathname === '/dashboard/users' && "bg-[#238377]"
+            pathname === '/dashboard/users' && "bg-[#1b6868]"
           )}
         >
           <Users className="h-5 w-5" />
@@ -39,7 +39,7 @@ export function Sidebar() {
           href="/dashboard/tasks" 
           className={cn(
             "flex items-center text-white hover:bg-[#238377] rounded-lg p-2",
-            pathname === '/dashboard/tasks' && "bg-[#238377]"
+            pathname === '/dashboard/tasks' && "bg-[#1b6868]"
           )}
         >
           <ClipboardList className="h-5 w-5" />
