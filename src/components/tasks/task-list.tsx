@@ -19,60 +19,56 @@ import { TaskStatus, TaskType, TaskSearchFields, Task } from '@/lib/types/task';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuthStore } from '@/lib/store/auth-store';
 
+// ** When The page 1st renders the initial checkbox for status and type is set, and after that the checkbox for status and type will only change when the data that is given from the server is changed 
+// TODO: this needs to be added UI and functionality tests
+
 export function TaskList() {
-  const { 
-    filteredTasks, 
-    setTasks,
-    setFilters 
-  } = useTaskStore();    
+  const { filteredTasks, setTasks, setFilters } = useTaskStore();    
   const { user } = useAuthStore();
-
-  const statuses: TaskStatus[] = Array.from(new Set(filteredTasks.map(task => task.status))); // TODO: this is supposed to be dynamic statuses instead of hardcoded statuses. the statuses should be unique statuses from the filteredTasks list's status field. Now it is not working well.
-  const types: TaskType[] = Array.from(new Set(filteredTasks.map(task => task.taskType))); // TODO: this is supposed to be dynamic types instead of hardcoded types. the types should be unique types from the filteredTasks list's taskType field. Now it is not working well. 
-  const [selectedStatuses, setSelectedStatuses] = useState<TaskStatus[]>(statuses);
-  const [selectedTypes, setSelectedTypes] = useState<TaskType[]>(types);
   const [searchField, setSearchField] = useState<TaskSearchFields>('taskName');
+  const [selectedStatuses, setSelectedStatuses] = useState<TaskStatus[]>([]);
+  const [selectedTypes, setSelectedTypes] = useState<TaskType[]>([]);
+  
+  // New state for storing initial options
+  const [initialStatuses, setInitialStatuses] = useState<TaskStatus[]>([]);
+  const [initialTypes, setInitialTypes] = useState<TaskType[]>([]);
 
-  useEffect(() => {
-    setFilters({ 
-      status: statuses,
-      type: types 
-    });
-  }, []);
-
+  // Fetch data only once on mount
   useEffect(() => {
     const fetchTasks = async () => {
-      try { 
+      try {
         const response = await fetch('/api/tasks');
         if (!response.ok) throw new Error('Failed to fetch tasks');
         const tasks = await response.json();
 
         let filteredTasks = tasks;
-
-        // RegularUser 본인이 생성한 Task 리스트 노출
         if (user?.userRole === 'RegularUser') {
           filteredTasks = tasks.filter((t: Task) => t.reporter === user.userName);
-          // Viewer  본인한테 할당된 Task 만 노출
         } else if (user?.userRole === 'Viewer') {
           filteredTasks = tasks.filter((t: Task) => t.assignee === user.userName);
         }
-  
-        setTasks(filteredTasks);
 
-        setFilters({ 
-          status: selectedStatuses,
-          type: selectedTypes 
-        });
+        setTasks(filteredTasks);
+        
+        // Set initial options from all tasks
+        const statuses = Array.from(new Set(filteredTasks.map((t: Task) => t.status))) as TaskStatus[];
+        const types = Array.from(new Set(filteredTasks.map((t: Task) => t.taskType))) as TaskType[];
+        
+        setInitialStatuses(statuses);
+        setInitialTypes(types);
+        setSelectedStatuses(statuses);
+        setSelectedTypes(types);
+        setFilters({ status: statuses, type: types });
       } catch (error) {
         console.error('Error fetching tasks:', error);
       }
     };
     fetchTasks();
-  }, [setTasks, user, selectedStatuses, selectedTypes, setFilters]);
+  }, [user, setTasks, setFilters]);
 
   const handleStatusChange = (status: TaskStatus | 'ALL', checked: boolean) => {
     const newStatuses = status === 'ALL'
-      ? (checked ? statuses : [])
+      ? (checked ? initialStatuses : [])
       : (checked
         ? [...selectedStatuses, status]
         : selectedStatuses.filter(s => s !== status));
@@ -83,7 +79,7 @@ export function TaskList() {
 
   const handleTypeChange = (type: TaskType | 'ALL', checked: boolean) => {
     const newTypes = type === 'ALL'
-      ? (checked ? types : [])
+      ? (checked ? initialTypes : [])
       : (checked
         ? [...selectedTypes, type]
         : selectedTypes.filter(t => t !== type));
@@ -152,12 +148,12 @@ export function TaskList() {
           <div className="flex items-center space-x-2">
             <Checkbox
               id="type-all"
-              checked={selectedTypes.length === types.length}
+              checked={selectedTypes.length === initialTypes.length}
               onCheckedChange={(checked) => handleTypeChange('ALL', checked as boolean)}
             />
             <label htmlFor="type-all">ALL</label>
           </div>
-          {types.map((type) => (
+          {initialTypes.map((type) => (
             <div key={type} className="flex items-center space-x-2">
               <Checkbox
                 id={`type-${type}`}
@@ -176,12 +172,12 @@ export function TaskList() {
           <div className="flex fl items-center space-x-2">
             <Checkbox
               id="status-all"
-              checked={selectedStatuses.length === statuses.length}
+              checked={selectedStatuses.length === initialStatuses.length}
               onCheckedChange={(checked) => handleStatusChange('ALL', checked as boolean)}
             />
             <label htmlFor="status-all">ALL</label>
           </div>
-          {statuses.map((status) => (
+          {initialStatuses.map((status) => (
             <div key={status} className="flex items-center space-x-2">
               <Checkbox
                 id={`status-${status}`}

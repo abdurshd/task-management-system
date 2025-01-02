@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Users, ClipboardList, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/lib/store/auth-store';
+import { ClipboardCheck } from 'lucide-react';
+import { PanesIcon } from '@/components/ui/panes-icon';
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
@@ -35,7 +37,7 @@ export function Sidebar() {
               pathname === '/dashboard/users' && "bg-[#1b6868]"
             )}
           >
-            <Users className="h-5 w-5" />
+            <PanesIcon className="h-5 w-5 text-white" />
             {!collapsed && <span className="ml-2">Users</span>}
           </Link>
         )}
@@ -46,7 +48,7 @@ export function Sidebar() {
             pathname === '/dashboard/tasks' && "bg-[#1b6868]"
           )}
         >
-          <ClipboardList className="h-5 w-5" />
+          <ClipboardCheck className="h-5 w-5" />
           {!collapsed && <span className="ml-2">Tasks</span>}
         </Link>
       </nav>

@@ -24,8 +24,10 @@ export function UserList() {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchField, setSearchField] = useState<UserSearchFields>('userName');
     const { setUsers, filteredUsers, setFilters } = useUserStore();
-    const roles: UserRole[] = Array.from(new Set(filteredUsers.map(user => user.userRole))); // TODO: this is supposed to be dynamic roles instead of hardcoded roles. the roles should be unique roles from the filteredUsers list's userRole field. Now it is not working well.
-    const [selectedRoles, setSelectedRoles] = useState<UserRole[]>(roles);
+
+
+    const [initialRoles, setInitialRoles] = useState<UserRole[]>([]);
+    const [selectedRoles, setSelectedRoles] = useState<UserRole[]>([]);
     const router = useRouter();
 
     useEffect(() => {
@@ -35,47 +37,48 @@ export function UserList() {
     }, [user, router]);
 
     useEffect(() => {
-        setFilters({ role: roles });
-    }, []);
-
-
-    useEffect(() => {
         const fetchUsers = async () => {
-          try {
-            const response = await fetch('/api/users');
-            if (!response.ok) throw new Error('Failed to fetch users');
-            const users = await response.json();
-            
-            // RegularUser 자신의 정보만 볼 수 있음
-            if (user?.userRole === 'RegularUser') {
-              const filteredUsers = users.filter((u: User) => u.userEmail === user.userEmail);
-              setUsers(filteredUsers);
-              // Viewer 정보만 볼 수 없음
-            } else if (user?.userRole === 'Viewer') {
-              setUsers([]);
-            } else {
-              setUsers(users);
+            try {
+                const response = await fetch('/api/users');
+                if (!response.ok) throw new Error('Failed to fetch users');
+                const users = await response.json();
+                
+                let filteredUsers = users;
+                if (user?.userRole === 'RegularUser') {
+                    filteredUsers = users.filter((u: User) => u.userEmail === user.userEmail);
+                } else if (user?.userRole === 'Viewer') {
+                    filteredUsers = [];
+                } else {
+                    filteredUsers = users;
+                }
+
+                setUsers(filteredUsers);
+                
+                // Set initial roles from fetched data
+                const roles = Array.from(new Set(filteredUsers.map((u: User) => u.userRole))) as UserRole[];
+                setInitialRoles(roles);
+                setSelectedRoles(roles);
+                setFilters({ role: roles });
+            } catch (error) {
+                console.error('Error fetching users:', error);
             }
-          } catch (error) {
-            console.error('Error fetching users:', error);
-          }
         };
         fetchUsers();
-      }, [setUsers, user]);
+    }, [setUsers, user, setFilters]);
     
       // Only show controls for Admin and PrimeUser
       const showControls = user?.userRole === 'Admin' || user?.userRole === 'PrimeUser';
     
 
-    const handleRoleChange = (role: UserRole | 'ALL', checked: boolean) => {
+      const handleRoleChange = (role: UserRole | 'ALL', checked: boolean) => {
         const newRoles = role === 'ALL'
-            ? (checked ? roles : [])
+            ? (checked ? initialRoles : [])
             : (checked
                 ? [...selectedRoles, role]
                 : selectedRoles.filter(r => r !== role));
         
         setSelectedRoles(newRoles);
-        setFilters({ role: newRoles.length ? newRoles : [] });
+        setFilters({ role: newRoles });
     };
 
     const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,14 +138,14 @@ export function UserList() {
                         <div className="flex items-center gap-2">
                         <Checkbox
                             id="role-all"
-                            checked={selectedRoles.length === roles.length}
+                            checked={selectedRoles.length === initialRoles.length}
                             onCheckedChange={(checked) => handleRoleChange('ALL', checked as boolean)}
                         />
                         <label htmlFor="role-all" className="text-sm font-medium leading-none">
                             ALL
                         </label>
                         </div>
-                        {roles.map((role) => (
+                        {initialRoles.map((role) => (
                         <div key={role} className="flex items-center gap-2">
                             <Checkbox
                             id={`role-${role}`}
