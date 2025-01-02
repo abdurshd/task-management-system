@@ -1,30 +1,30 @@
 <svg
-            width="200"
-            height="200"
-            viewBox="0 0 200 200"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="mb-8"
-          >
-            {/* Sad computer monitor */}
-            <rect x="20" y="30" width="160" height="120" rx="10" fill="#E5E7EB" />
-            <rect x="30" y="40" width="140" height="90" rx="5" fill="#1F2937" />
-            
-            {/* Stand */}
-            <rect x="80" y="150" width="40" height="20" fill="#E5E7EB" />
-            <rect x="70" y="170" width="60" height="10" rx="2" fill="#E5E7EB" />
-            
-            {/* Sad face */}
-            <circle cx="80" cy="90" r="8" fill="#EF4444" /> {/* Left eye */}
-            <circle cx="120" cy="90" r="8" fill="#EF4444" /> {/* Right eye */}
-            <path
-              d="M70 110 Q100 95 130 110"
-              stroke="#EF4444"
-              strokeWidth="6"
-              fill="none"
-            />
-            
-            {/* Error symbols */}
-            <text x="65" y="75" fill="#EF4444" fontSize="16">!</text>
-            <text x="115" y="75" fill="#EF4444" fontSize="16">?</text>
-          </svg>
+  width="200"
+  height="200"
+  viewBox="0 0 200 200"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  className="mb-8"
+>
+  {/* Sad computer monitor */}
+  <rect x="20" y="30" width="160" height="120" rx="10" fill="#E5E7EB" />
+  <rect x="30" y="40" width="140" height="90" rx="5" fill="#1F2937" />
+  
+  {/* Stand */}
+  <rect x="80" y="150" width="40" height="20" fill="#E5E7EB" />
+  <rect x="70" y="170" width="60" height="10" rx="2" fill="#E5E7EB" />
+  
+  {/* Sad face */}
+  <circle cx="80" cy="90" r="8" fill="#EF4444" /> {/* Left eye */}
+  <circle cx="120" cy="90" r="8" fill="#EF4444" /> {/* Right eye */}
+  <path
+    d="M70 110 Q100 95 130 110"
+    stroke="#EF4444"
+    strokeWidth="6"
+    fill="none"
+  />
+  
+  {/* Error symbols */}
+  <text x="65" y="75" fill="#EF4444" fontSize="16">!</text>
+  <text x="115" y="75" fill="#EF4444" fontSize="16">?</text>
+</svg>

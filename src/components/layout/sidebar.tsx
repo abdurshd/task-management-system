@@ -16,19 +16,19 @@ export function Sidebar() {
 
   return (
     <div className={cn(
-      "h-screen bg-[#289b9b] transition-all duration-300",
-      collapsed ? "w-[60px]" : "w-[240px]"
+      "flex flex-col bg-[#289b9b] min-h-screen transition-all duration-300 relative",
+      collapsed ? "w-16" : "w-64"
     )}>
-      <div className="flex justify-end p-2">
+      <div className="absolute -right-4 top-12">
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="p-2 text-white hover:bg-[#238377] rounded-lg"
+          className="p-1 text-white bg-[#1b6868] hover:bg-[#238377] rounded-full w-8 h-8 flex items-center justify-center"
         >
           {collapsed ? <ChevronRight /> : <ChevronLeft />}
         </button>
       </div>
       
-      <nav className="space-y-2 p-4">
+      <nav className="space-y-2 p-4 mt-16 font-bold">
         {user?.userRole !== 'Viewer' && (
           <Link 
             href="/dashboard/users" 
@@ -37,7 +37,7 @@ export function Sidebar() {
               pathname === '/dashboard/users' && "bg-[#1b6868]"
             )}
           >
-            <PanesIcon className="h-5 w-5 text-white" />
+            <PanesIcon className={`text-white ${collapsed ? "h-4 w-4 m-0" : "h-5 w-5"}`}  />
             {!collapsed && <span className="ml-2">Users</span>}
           </Link>
         )}
@@ -48,7 +48,7 @@ export function Sidebar() {
             pathname === '/dashboard/tasks' && "bg-[#1b6868]"
           )}
         >
-          <ClipboardCheck className="h-5 w-5" />
+          <ClipboardCheck className={`text-white ${collapsed ? "h-4 w-4 m-0" : "h-5 w-5"}`} />
           {!collapsed && <span className="ml-2">Tasks</span>}
         </Link>
       </nav>

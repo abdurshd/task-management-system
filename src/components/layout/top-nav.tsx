@@ -1,7 +1,6 @@
 'use client'
 
 import { useAuthStore } from "@/lib/store/auth-store"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -12,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { usePathname, useRouter } from "next/navigation"
+import { UserRound } from 'lucide-react';
 
 export function TopNav() {
   const { user, logout } = useAuthStore()
@@ -24,24 +24,20 @@ export function TopNav() {
   }
 
   return (
-    <div className="border-b">
-      <div className="flex h-16 items-center px-4 justify-between">
-        <div className="flex items-center space-x-4">
-          {pathname === '/dashboard/tasks' && <h1 className="text-2xl font-bold">Tasks</h1>}
-          {pathname === '/dashboard/users' && <h1 className="text-2xl font-bold">Users</h1>}
+    <div className="border-b max-w-screen">
+      <div className="flex h-16 items-center px-4">
+        <div className="flex-1 flex items-center space-x-4 ml-4">
+          {pathname === '/dashboard/tasks' && <h1 className="text-2xl font-bold">Task List</h1>}
+          {pathname === '/dashboard/users' && <h1 className="text-2xl font-bold">User List</h1>}
         </div>
         
-        <div className="flex items-center space-x-4">
-          <span>{user?.userName}</span>
-          <span className="text-sm text-muted-foreground">{user?.userRole}</span>
+        <div className="flex items-center space-x-4 ml-auto">
+          <span className="text-[#2d61f5]">{user?.userName}</span>
+          <span className="text-sm text-[#2d61f5]">{user?.userRole}</span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback>
-                    {user?.userName?.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+              <Button variant='ghost' className="relative h-8 w-8 rounded-full">
+                <UserRound className={`text-black h-5 w-5`} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>

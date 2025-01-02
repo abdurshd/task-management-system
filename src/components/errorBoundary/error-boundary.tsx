@@ -24,6 +24,7 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="flex flex-col items-center justify-center min-h-screen p-4">
+          {/* TODO: Add error image */}
           <Image src="/error.svg" alt="error svg" />
           <h2 className="text-2xl font-bold mb-4">Something went wrong. Please reload the page.</h2>
           <Button onClick={() => window.location.reload()}>
