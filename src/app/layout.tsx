@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-// import { Sidebar } from '@/components/layout/sidebar';
-// import { TopNav } from '@/components/layout/top-nav';
+import { ErrorBoundary } from '@/components/errors/error-boundary';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,12 +29,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex">
+        <ErrorBoundary>
+          <div className="flex">
             <main>
               {children}
             </main>
-            <Toaster  />
-        </div>
+            <Toaster />
+          </div>
+        </ErrorBoundary>
       </body>
     </html>
   );

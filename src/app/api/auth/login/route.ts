@@ -14,7 +14,19 @@ export async function POST(request: Request) {
       );
     }
     
-    return NextResponse.json(user);
+    const response = NextResponse.json(user);
+    
+    // Set the user cookie
+    response.cookies.set({
+      name: 'user',
+      value: JSON.stringify(user),
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/'
+    });
+    
+    return response;
   } catch (error: unknown) {
     console.error(error);
     return new NextResponse(

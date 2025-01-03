@@ -1,3 +1,5 @@
+'use client';
+
 import { Component, ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';

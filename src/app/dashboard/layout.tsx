@@ -5,9 +5,9 @@ export default function DashboardLayout({children}: Readonly<{
     children: React.ReactNode;
     }>) {
     return (
-        <div className="flex">
+        <div className="flex w-full">
             <Sidebar />
-            <div>
+            <div className="flex flex-col w-full">
                 <TopNav />
                 <main className="p-8">
                     {children}
