@@ -31,7 +31,7 @@ export default function RootLayout({
       >
         <ErrorBoundary>
           <div className="flex">
-            <main>
+            <main className="flex-1">
               {children}
             </main>
             <Toaster />

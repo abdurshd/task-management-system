@@ -17,7 +17,7 @@ A role-based task management system built with Next.js 14, TypeScript, and shadc
 - Tailwind CSS
 - shadcn/ui
 - Zustand (State Management)
-- React Query
+- React Hook Form (Form Management)
 - Zod (Form Validation)
 
 ## Installation

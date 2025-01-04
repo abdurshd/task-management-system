@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectItem, SelectContent } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from '@/hooks/use-toast';
+import { useErrorHandler } from '@/hooks/use-error-handler';
 
 
 const baseSchema = z.object({
@@ -46,6 +47,7 @@ const taskSchema = z.discriminatedUnion('taskType', [
 export function TaskForm() {
   const { user } = useAuthStore();
   const { createTask, isLoading } = useTaskStore();
+  const { handleError } = useErrorHandler();
   const form = useForm({
     resolver: zodResolver(taskSchema),
     defaultValues: {
@@ -75,10 +77,11 @@ export function TaskForm() {
       toast({ title: 'Task created successfully', variant: 'success' });
       form.reset();
     } catch (error) {
-      console.error(error);
-      toast({ 
-        title: 'Failed to create task',
-        variant: 'destructive'
+      await handleError({
+        type: 'API',
+        message: 'Failed to create task. Please try again.',
+        action: 'RETRY',
+        retryCallback: () => onSubmit(data)
       });
     }
   };

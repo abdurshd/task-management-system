@@ -10,7 +10,7 @@ export async function GET() {
     
     return NextResponse.json(tasks);
   } catch (error) {
-    console.error('Error reading tasks:', error);
+    // console.error('Error reading tasks:', error);
     return NextResponse.json({ error: 'Failed to load tasks' }, { status: 500 });
   }
 } 

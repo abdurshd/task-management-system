@@ -10,7 +10,7 @@ export async function GET() {
     
     return NextResponse.json(users);
   } catch (error) {
-    console.error('Error reading users:', error);
+    // console.error('Error reading users:', error);
     return NextResponse.json({ error: 'Failed to load users' }, { status: 500 });
   }
 } 

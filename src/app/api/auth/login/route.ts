@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     
     return response;
   } catch (error: unknown) {
-    console.error(error);
+    // console.error(error);
     return new NextResponse(
       JSON.stringify({ error: 'Invalid request' }),
       { status: 400 }

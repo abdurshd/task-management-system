@@ -18,6 +18,7 @@ import { TaskForm } from './taskForm';
 import { TaskStatus, TaskType, TaskSearchFields, Task } from '@/lib/types/task';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuthStore } from '@/lib/store/auth-store';
+import { useErrorHandler } from '@/hooks/use-error-handler';
 
 // ** When The page 1st renders the initial checkbox for status and type is set, and after that the checkbox for status and type will only change when the data that is given from the server is changed 
 // TODO: this needs to be added UI and functionality tests
@@ -32,7 +33,7 @@ export function TaskList() {
   // New state for storing initial options
   const [initialStatuses, setInitialStatuses] = useState<TaskStatus[]>([]);
   const [initialTypes, setInitialTypes] = useState<TaskType[]>([]);
-
+  const { handleError } = useErrorHandler();
   // Fetch data only once on mount
   useEffect(() => {
     const fetchTasks = async () => {
@@ -60,7 +61,12 @@ export function TaskList() {
         setSelectedTypes(types);
         setFilters({ status: statuses, type: types });
       } catch (error) {
-        console.error('Error fetching tasks:', error);
+        await handleError({
+          type: 'API',
+          message: 'Failed to fetch tasks. Please try again.',
+          action: 'RETRY',
+          retryCallback: () => fetchTasks()
+        });
       }
     };
     fetchTasks();

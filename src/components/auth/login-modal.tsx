@@ -13,6 +13,7 @@ import {
 import { useAuthStore } from '@/lib/store/auth-store';
 import { toast } from '@/hooks/use-toast';
 import { Label } from '../ui/label';
+import { useErrorHandler } from '@/hooks/use-error-handler';
 
 export default function LoginModal() {
   const [email, setEmail] = useState('');
@@ -21,6 +22,7 @@ export default function LoginModal() {
   const login = useAuthStore(state => state.login);
   const { user } = useAuthStore();
   const [password, setPassword] = useState('');
+  const { handleError } = useErrorHandler();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,17 +35,17 @@ export default function LoginModal() {
         description: "Redirecting to dashboard...",
         variant: "success"
       });
+      
       if (user?.userRole === 'Viewer') {
         router.push('/dashboard/tasks');
       } else {
         router.push('/dashboard/users');
       }
-    } catch (error: unknown) {
-      console.error(error);
-      toast({
-        title: "Login failed",
-        description: "Invalid email address. Please try again.",
-        variant: "destructive"
+    } catch (error) {
+      await handleError({
+        type: 'AUTH',
+        message: 'Invalid email address or authentication failed',
+        action: 'TOAST'
       });
     } finally {
       setIsLoading(false);
@@ -51,7 +53,8 @@ export default function LoginModal() {
   };
 
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
+  const isValidPassword = password.length >= 6;
+  
   return (
     <Dialog open>
       <DialogContent className="sm:max-w-[425px]">
@@ -80,12 +83,12 @@ export default function LoginModal() {
               placeholder="비밀번호를 입력해 주세요."
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              // className={password && !isValidPassword ? 'border-red-500' : ''}
+              className={password && !isValidPassword ? 'border-red-500' : ''}
               disabled={isLoading}
             />
-            {/* {password && !isValidPassword && (
-              <p className="text-sm text-red-500">Please enter a valid password</p>
-            )} */}
+            {password && !isValidPassword && (
+              <p className="text-sm text-red-500">The password you provided must have at least 6 characters.</p>
+            )}
           </div>
           <div className="flex justify-end space-x-2">
             <Button variant="outline" type="button">
@@ -93,7 +96,7 @@ export default function LoginModal() {
             </Button>
             <Button 
               type="submit" 
-              disabled={!isValidEmail || isLoading}
+              disabled={!isValidEmail || isLoading || !isValidPassword}
               className="min-w-[100px]"
             >
               {isLoading ? "Loading..." : "Log-In"}

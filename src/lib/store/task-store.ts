@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { Task, TaskSearchFields, TaskStatus, TaskType } from '@/lib/types/task';
 // import { UserRole } from '@/lib/types/user';
 import { useAuthStore } from './auth-store';
+import { useErrorHandler } from '@/hooks/use-error-handler';
 
 interface TaskState {
   tasks: Task[];
@@ -75,6 +76,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   },
   
   createTask: async (task) => {
+    const { handleError } = useErrorHandler();
     try {
       set({ isLoading: true });
       const response = await fetch('/api/tasks', {
@@ -82,11 +84,18 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         body: JSON.stringify(task)
       });
       
-      if (!response.ok) throw new Error('Failed to create task');
+      if (!response.ok) {
+        throw new Error('Failed to create task');
+      }
       
       await get().fetchTasks();
     } catch (error) {
-      set({ error: error as Error });
+      await handleError({
+        type: 'API',
+        message: 'Failed to create task. Please try again.',
+        action: 'RETRY',
+        retryCallback: () => get().createTask(task)
+      });
       throw error;
     } finally {
       set({ isLoading: false });
@@ -94,22 +103,30 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   },
   
   fetchTasks: async () => {
+    const { handleError } = useErrorHandler();
     try {
       set({ isLoading: true });
       const response = await fetch('/api/tasks');
-      if (!response.ok) throw new Error('Failed to fetch tasks');
+      if (!response.ok) {
+        throw new Error('Failed to fetch tasks');
+      }
       
       const tasks = await response.json();
       set({ tasks, filteredTasks: tasks });
       get().setFilters({}); // Reapply filters
     } catch (error) {
-      set({ error: error as Error });
+      await handleError({
+        type: 'API',
+        message: 'Failed to fetch tasks. Please try again.',
+        action: 'RETRY',
+        retryCallback: () => get().fetchTasks()
+      });
       throw error;
     } finally {
       set({ isLoading: false });
     }
   },
-  
+    
   setTasks: (tasks) => {
     set({ 
       tasks,

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  
+  <!-- Shield -->
+  <path d="M200 80 L280 120 L280 200 C280 260 240 300 200 320 C160 300 120 260 120 200 L120 120 Z" 
+    fill="#e9ecef" 
+    stroke="#2d61f5" 
+    stroke-width="8" 
+    stroke-linejoin="round">
+    <!-- <animate attributeName="stroke-dasharray" 
+      values="1000;0" 
+      dur="2s" 
+      repeatCount="indefinite" /> -->
+  </path>
+
+  <!-- Lock Body -->
+  <rect x="160" y="180" width="80" height="70" rx="10" 
+    fill="#2d61f5">
+    <animate attributeName="opacity" 
+      values="0.8;1;0.8" 
+      dur="2s" 
+      repeatCount="indefinite" />
+  </rect>
+
+  <!-- Lock Shackle -->
+  <path d="M175 180 L175 150 Q200 120 225 150 L225 180" 
+    fill="none" 
+    stroke="#2d61f5" 
+    stroke-width="12" 
+    stroke-linecap="round">
+    <animate attributeName="d" 
+      values="M175 180 L175 150 Q200 120 225 150 L225 180;M175 180 L175 160 Q200 130 225 160 L225 180;M175 180 L175 150 Q200 120 225 150 L225 180" 
+      dur="2s" 
+      repeatCount="indefinite" />
+  </path>
+
+  <!-- Exclamation Mark -->
+  <circle cx="200" cy="220" r="4" fill="white" />
+  <rect x="198" y="195" width="4" height="20" rx="2" fill="white" />
+</svg>

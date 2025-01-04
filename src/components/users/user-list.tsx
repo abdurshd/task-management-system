@@ -17,10 +17,12 @@ import { User, UserRole, UserSearchFields } from '@/lib/types/user';
 import { useUserStore } from '@/lib/store/user-store';
 import { useAuthStore } from '@/lib/store/auth-store';
 import { useRouter } from 'next/navigation';
+import { useErrorHandler } from '@/hooks/use-error-handler';
 
 
 export function UserList() {
     const { user } = useAuthStore();
+    const { handleError } = useErrorHandler();
     const [searchTerm, setSearchTerm] = useState('');
     const [searchField, setSearchField] = useState<UserSearchFields>('userName');
     const { setUsers, filteredUsers, setFilters } = useUserStore();
@@ -30,11 +32,11 @@ export function UserList() {
     const [selectedRoles, setSelectedRoles] = useState<UserRole[]>([]);
     const router = useRouter();
 
-    useEffect(() => {
-        if (user?.userRole === 'Viewer') {
-            router.push('/dashboard/tasks');
-        }
-    }, [user, router]);
+    // useEffect(() => {
+    //     if (user?.userRole === 'Viewer') {
+    //         router.push('/dashboard/tasks');
+    //     }
+    // }, [user, router]);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -60,7 +62,12 @@ export function UserList() {
                 setSelectedRoles(roles);
                 setFilters({ role: roles });
             } catch (error) {
-                console.error('Error fetching users:', error);
+                await handleError({
+                    type: 'API',
+                    message: 'Failed to fetch users. Please try again.',
+                    action: 'RETRY',
+                    retryCallback: () => fetchUsers()
+                });
             }
         };
         fetchUsers();
