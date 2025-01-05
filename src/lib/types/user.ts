@@ -10,3 +10,8 @@ export interface User {
 }
 
 export type UserSearchFields = 'userName' | 'userEmail' | 'userPhone';
+
+export type Assignee = {
+  userName: string;
+  userRole: UserRole;
+};

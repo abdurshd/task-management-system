@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { useAuthStore } from '@/lib/store/auth-store';
 import { toast } from '@/hooks/use-toast';
@@ -31,8 +32,8 @@ export default function LoginModal() {
     try {
       await login(email);
       toast({
-        title: "Login successful",
-        description: "Redirecting to dashboard...",
+        title: "로그인 성공",
+        description: "대시보드로 이동합니다.",
         variant: "success"
       });
       
@@ -44,7 +45,7 @@ export default function LoginModal() {
     } catch (error) {
       await handleError({
         type: 'AUTH',
-        message: 'Invalid email address or authentication failed',
+        message: '이메일 주소 또는 비밀번호가 올바르지 않습니다.',
         action: 'TOAST'
       });
     } finally {
@@ -60,6 +61,9 @@ export default function LoginModal() {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>User Login</DialogTitle>
+          <DialogDescription className="invisible">
+          태스크 생성 및 관리가 가능한 웹사이트 로그인 페이지입니다.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -73,7 +77,7 @@ export default function LoginModal() {
               disabled={isLoading}
             />
             {email && !isValidEmail && (
-              <p className="text-sm text-red-500">Please enter a valid email address</p>
+              <p className="text-sm text-red-500">이메일 주소를 올바르게 입력해주세요.</p>
             )}
           </div>
           <div className="space-y-2">
@@ -87,19 +91,19 @@ export default function LoginModal() {
               disabled={isLoading}
             />
             {password && !isValidPassword && (
-              <p className="text-sm text-red-500">The password you provided must have at least 6 characters.</p>
+              <p className="text-sm text-red-500">비밀번호는 최소 6자 이상이어야 합니다.</p>
             )}
           </div>
           <div className="flex justify-end space-x-2">
             <Button variant="outline" type="button">
-              Cancel
+              취소
             </Button>
             <Button 
               type="submit" 
               disabled={!isValidEmail || isLoading || !isValidPassword}
               className="min-w-[100px]"
             >
-              {isLoading ? "Loading..." : "Log-In"}
+              {isLoading ? "로딩중..." : "로그인"}
             </Button>
           </div>
         </form>

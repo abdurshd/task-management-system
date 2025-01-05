@@ -19,9 +19,7 @@ import { TaskStatus, TaskType, TaskSearchFields, Task } from '@/lib/types/task';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuthStore } from '@/lib/store/auth-store';
 import { useErrorHandler } from '@/hooks/use-error-handler';
-
-// ** When The page 1st renders the initial checkbox for status and type is set, and after that the checkbox for status and type will only change when the data that is given from the server is changed 
-// TODO: this needs to be added UI and functionality tests
+import { ErrorBoundary } from '@/components/errors/error-boundary';
 
 export function TaskList() {
   const { filteredTasks, setTasks, setFilters } = useTaskStore();    
@@ -34,6 +32,7 @@ export function TaskList() {
   const [initialStatuses, setInitialStatuses] = useState<TaskStatus[]>([]);
   const [initialTypes, setInitialTypes] = useState<TaskType[]>([]);
   const { handleError } = useErrorHandler();
+  const [isOpen, setIsOpen] = useState(false);
   // Fetch data only once on mount
   useEffect(() => {
     const fetchTasks = async () => {
@@ -122,18 +121,20 @@ export function TaskList() {
             className="w-[200px]"
             onChange={(e) => setFilters({ searchTerm: e.target.value })}
           />
-          <Dialog>
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
               <Button disabled={user?.userRole === 'Viewer'}>Create Task</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Create New Task</DialogTitle>
-                <DialogDescription>
+                <DialogTitle>Task 생성</DialogTitle>
+                <DialogDescription className="invisible">
                   Fill in the details below to create a new task.
                 </DialogDescription>
               </DialogHeader>
-              <TaskForm />
+              <ErrorBoundary>
+                <TaskForm onClose={() => setIsOpen(false)} />
+              </ErrorBoundary>
             </DialogContent>
           </Dialog>
         </div>

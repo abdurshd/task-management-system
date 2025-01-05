@@ -20,6 +20,7 @@ interface TaskState {
   createTask: (task: Omit<Task, 'id' | 'createdAt'>) => Promise<void>;
   fetchTasks: () => Promise<void>;
   setTasks: (tasks: Task[]) => void;
+  setIsLoading: (loading: boolean) => void;
 }
 
 export const useTaskStore = create<TaskState>((set, get) => ({
@@ -76,34 +77,45 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   },
   
   createTask: async (task) => {
-    const { handleError } = useErrorHandler();
-    try {
-      set({ isLoading: true });
-      const response = await fetch('/api/tasks', {
-        method: 'POST',
-        body: JSON.stringify(task)
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to create task');
+    let retryCount = 0;
+    const maxRetries = 3;
+
+    const attemptCreate = async () => {
+      try {
+        set({ isLoading: true });
+        
+        const response = await fetch('/api/tasks', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(task)
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to create task');
+        }
+        
+        await get().fetchTasks();
+        return data;
+      } catch (error) {
+        if (retryCount < maxRetries) {
+          retryCount++;
+          throw error;
+        } else {
+          throw error;
+        }
+      } finally {
+        set({ isLoading: false });
       }
-      
-      await get().fetchTasks();
-    } catch (error) {
-      await handleError({
-        type: 'API',
-        message: 'Failed to create task. Please try again.',
-        action: 'RETRY',
-        retryCallback: () => get().createTask(task)
-      });
-      throw error;
-    } finally {
-      set({ isLoading: false });
-    }
+    };
+
+    return attemptCreate();
   },
   
   fetchTasks: async () => {
-    const { handleError } = useErrorHandler();
     try {
       set({ isLoading: true });
       const response = await fetch('/api/tasks');
@@ -115,12 +127,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       set({ tasks, filteredTasks: tasks });
       get().setFilters({}); // Reapply filters
     } catch (error) {
-      await handleError({
-        type: 'API',
-        message: 'Failed to fetch tasks. Please try again.',
-        action: 'RETRY',
-        retryCallback: () => get().fetchTasks()
-      });
       throw error;
     } finally {
       set({ isLoading: false });
@@ -132,5 +138,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       tasks,
       filteredTasks: tasks
     });
-  }
+  },
+  
+  setIsLoading: (loading: boolean) => set({ isLoading: loading })
 }));
