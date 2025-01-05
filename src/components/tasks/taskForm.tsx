@@ -19,12 +19,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
 import { toast } from '@/hooks/use-toast';
-import { useErrorHandler } from '@/hooks/use-error-handler';
 import { cn } from '@/lib/utils';
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { useEffect, useState } from 'react';
-import { TaskStatus } from '@/lib/types/task';
 
 
 const baseSchema = z.object({
@@ -48,7 +46,12 @@ const deliverySchema = baseSchema.extend({
   taskType: z.literal('택배요청'),
   recipientName: z.string().min(1, '받는사람 이름을 입력해주세요'),
   recipientPhone: z.string().regex(/^\+8210-\d{4}-\d{4}$/, '전화번호 형식이 올바르지 않습니다. +8210-0000-0000 형식으로 입력해주세요.'),
-  recipientAddress: z.string().min(1, '주소를 입력해주세요'),
+  recipientAddress: z.string()
+    .min(1, '주소를 입력해주세요')
+    .regex(
+      /^(?:(?:서울|부산|대구|인천|광주|대전|울산|세종)(?:\s?(?:특별)?시)?|(?:경기|강원|충청[북남]|전라[북남]|경상[북남]|제주특별자치)도|제주)\s?(?:[가-힣]+(?:시|군|구))?\s[가-힣]+(?:읍|면|동|가|로|길)(?:[0-9]+(?:길)?)?(?:\s?[0-9]+(?:-[0-9]+)?)?(?:\s?(?:지하)?[0-9]+층)?(?:\s?[A-Za-z]?[0-9]+호?)?(?:\s?\([가-힣]+(?:동|리)(?:,\s?[가-힣]+)?\))?$/,
+      '주소 형태가 아닙니다. (예: 경기도 성남시 분당구 판교로 123)'
+    ),
 });
 
 const taskSchema = z.discriminatedUnion('taskType', [
@@ -60,7 +63,6 @@ export function TaskForm({ onClose }: { onClose: () => void }) {
   const { user } = useAuthStore();
   const { assignees, fetchUsers } = useUserStore();
   const { createTask, isLoading } = useTaskStore();
-  const { handleError } = useErrorHandler();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -129,7 +131,7 @@ export function TaskForm({ onClose }: { onClose: () => void }) {
   };
 
   const handleCancel = () => {
-    form.reset();
+    // form.reset();
     onClose();
   };
 
@@ -291,7 +293,7 @@ export function TaskForm({ onClose }: { onClose: () => void }) {
                 <FormItem>
                   <FormLabel>받는사람 주소</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                      <Input {...field} placeholder="주소를 검색해주세요" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

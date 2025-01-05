@@ -59,7 +59,7 @@ export const useUserStore = create<UserState>((set, get) => ({
   fetchUsers: async () => {
     try {
       set({ isLoading: true });
-      const response = await fetch('/api/users');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`);
       const users = await response.json();
       set({ users, filteredUsers: users });
       
@@ -70,7 +70,14 @@ export const useUserStore = create<UserState>((set, get) => ({
         userRole: user.userRole
       }));
 
-      if (currentUser?.userRole === 'RegularUser') {
+      if (currentUser?.userRole === 'PrimeUser') {
+        assignees = users.filter((u: User) => 
+          u.userRole !== 'Admin'
+        ).map((u: User) => ({
+          userName: u.userName,
+          userRole: u.userRole
+        }));
+      } else if (currentUser?.userRole === 'RegularUser') {
         assignees = users.filter((u: User) => 
           u.userEmail === currentUser?.userEmail
         ).map((u: User) => ({

@@ -1,9 +1,7 @@
 // src/lib/store/task-store.ts
 import { create } from 'zustand';
 import { Task, TaskSearchFields, TaskStatus, TaskType } from '@/lib/types/task';
-// import { UserRole } from '@/lib/types/user';
 import { useAuthStore } from './auth-store';
-import { useErrorHandler } from '@/hooks/use-error-handler';
 
 interface TaskState {
   tasks: Task[];
@@ -84,7 +82,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       try {
         set({ isLoading: true });
         
-        const response = await fetch('/api/tasks', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -118,14 +116,14 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   fetchTasks: async () => {
     try {
       set({ isLoading: true });
-      const response = await fetch('/api/tasks');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks`);
       if (!response.ok) {
         throw new Error('Failed to fetch tasks');
       }
       
       const tasks = await response.json();
       set({ tasks, filteredTasks: tasks });
-      get().setFilters({}); // Reapply filters
+      get().setFilters({});
     } catch (error) {
       throw error;
     } finally {

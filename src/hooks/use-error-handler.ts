@@ -30,8 +30,6 @@ export function useErrorHandler() {
           try {
             await retryCallback();
           } catch (error) {
-            // If retry fails, show toast
-            // console.error('Retry failed:', error);
             toast({
               title: 'Operation failed',
               description: 'Please try again later',

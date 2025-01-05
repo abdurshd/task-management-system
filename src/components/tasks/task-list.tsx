@@ -21,6 +21,7 @@ import { useAuthStore } from '@/lib/store/auth-store';
 import { useErrorHandler } from '@/hooks/use-error-handler';
 import { ErrorBoundary } from '@/components/errors/error-boundary';
 
+
 export function TaskList() {
   const { filteredTasks, setTasks, setFilters } = useTaskStore();    
   const { user } = useAuthStore();
@@ -221,7 +222,7 @@ export function TaskList() {
               <TableCell>{task.reporter}</TableCell>
               <TableCell>{task.taskDescription}</TableCell>
               <TableCell>{task.assignee}</TableCell>
-              <TableCell>{task.status}</TableCell>
+              <TableCell> {task.status}</TableCell>
             </TableRow>
           ))}
         </TableBody>
