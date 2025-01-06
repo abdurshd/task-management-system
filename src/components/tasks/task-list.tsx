@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTaskStore } from '@/lib/store/task-store';
 import {
   Table,
@@ -20,7 +20,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAuthStore } from '@/lib/store/auth-store';
 import { useErrorHandler } from '@/hooks/use-error-handler';
 import { ErrorBoundary } from '@/components/errors/error-boundary';
-
+import { ChevronUp, ChevronDown, CopyCheck } from 'lucide-react';
+import { cn } from '@/lib/utils';
+type SortDirection = 'asc' | 'desc' | null;
+type SortConfig = {
+  column: string;
+  direction: SortDirection;
+};
 
 export function TaskList() {
   const { filteredTasks, setTasks, setFilters } = useTaskStore();    
@@ -34,6 +40,11 @@ export function TaskList() {
   const [initialTypes, setInitialTypes] = useState<TaskType[]>([]);
   const { handleError } = useErrorHandler();
   const [isOpen, setIsOpen] = useState(false);
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ 
+    column: '', 
+    direction: null 
+  });
+
   // Fetch data only once on mount
   useEffect(() => {
     const fetchTasks = async () => {
@@ -97,6 +108,50 @@ export function TaskList() {
   const handleSearchFieldChange = (value: TaskSearchFields) => {
     setSearchField(value);
     setFilters({ searchField: value });
+  };
+
+  const handleSort = (column: string) => {
+    let direction: SortDirection = 'asc';
+    
+    if (sortConfig.column === column) {
+      if (sortConfig.direction === 'asc') direction = 'desc';
+      else if (sortConfig.direction === 'desc') direction = null;
+      else direction = 'asc';
+    }
+    
+    setSortConfig({ column, direction });
+  };
+
+  const getSortedTasks = () => {
+    if (!sortConfig.direction) return filteredTasks;
+
+    return [...filteredTasks].sort((a, b) => {
+      const aValue = a[sortConfig.column as keyof typeof a] ?? '';
+      const bValue = b[sortConfig.column as keyof typeof b] ?? '';
+
+      if (sortConfig.direction === 'asc') {
+        return aValue > bValue ? 1 : -1;
+      }
+      return aValue < bValue ? 1 : -1;
+    });
+  };
+
+  const getSortIcon = (column: string) => {
+    const isActive = sortConfig.column === column;
+    return (
+      <div className="ml-2">
+          <div className="flex flex-col">
+              <ChevronUp className={cn(
+                  "h-3 w-3 -mb-1",
+                  isActive && sortConfig.direction === 'asc' ? "text-[#000000] text-bold" : "text-gray-400"
+              )} />
+              <ChevronDown className={cn(
+                  "h-3 w-3",
+                  isActive && sortConfig.direction === 'desc' ? "text-[#000000]  text-bold" : "text-gray-400"
+              )} />
+          </div>
+      </div>
+    );
   };
 
   return (
@@ -176,7 +231,7 @@ export function TaskList() {
         <hr className="border-t border-[#e2e2e2] w-full p-0 m-0" />
 
         <div className="flex space-x-2 mt-2">
-          <h3 className="font-medium">상태</h3>
+          <h3 className="font-bold">상태</h3>
           <div className="flex fl items-center space-x-2">
             <Checkbox
               id="status-all"
@@ -197,36 +252,64 @@ export function TaskList() {
           ))}
         </div>
       </div>
-      <hr className="border-t border-[#e2e2e2] w-full p-0 m-0" />
+      <hr className="border-t border-[#e2e2e2] w-full p-0 m-0 pb-10" />
+      
+      <div className="max-h-[55vh] overflow-y-auto border-b-[2px] border-[#b3b3b3]">
+        <div className="sticky top-0 bg-white z-50">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {[
+                  { key: 'taskName', label: 'Task Name' },
+                  { key: 'taskType', label: 'Type' },
+                  { key: 'createdAt', label: 'Created At' },
+                  { key: 'dueDate', label: 'Due Date' },
+                  { key: 'reporter', label: 'Reporter' },
+                  { key: 'taskDescription', label: 'Description' },
+                  { key: 'assignee', label: '담당자(Assignee)' },
+                  { key: 'status', label: '상태(Status)' }
+                ].map(({ key, label }) => (
+                  <TableHead key={key}>
+                    <Button
+                        variant="ghost"
+                        onClick={() => handleSort(key)}
+                        className={cn(
+                            "flex items-center gap-1 hover:text-[#289b9b] text-[#000000] font-bold",
+                            sortConfig.column === key && sortConfig.direction && "text-[#289b9b] font-bold"
+                        )}
+                    >
+                      {label === 'Task Name' ? (
+                        <div className="flex items-center gap-1">
+                          <CopyCheck className="w-4 h-4 text-[#289b9b]" />
+                          <span>Task Name</span>
+                        </div>
+                      ) : label}
+                      {getSortIcon(key)}
+                    </Button>
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+          </Table>
+        </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Task Name</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Created At</TableHead>
-            <TableHead>Due Date</TableHead>
-            <TableHead>Reporter</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Assignee</TableHead>
-            <TableHead>Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredTasks.map((task) => (
-            <TableRow key={`${task.taskName}-${task.createdAt}`}>
-              <TableCell>{task.taskName}</TableCell>
-              <TableCell>{task.taskType}</TableCell>
-              <TableCell>{new Date(task.createdAt).toLocaleDateString()}</TableCell>
-              <TableCell>{new Date(task.dueDate).toLocaleDateString()}</TableCell>
-              <TableCell>{task.reporter}</TableCell>
-              <TableCell>{task.taskDescription}</TableCell>
-              <TableCell>{task.assignee}</TableCell>
-              <TableCell> {task.status}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+        <Table>
+          <TableBody>
+            {getSortedTasks().map((task) => (
+              <TableRow key={`${task.taskName}-${task.createdAt}`}>
+                <TableCell>{task.taskName}</TableCell>
+                <TableCell>{task.taskType}</TableCell>
+                <TableCell>{new Date(task.createdAt).toLocaleDateString()}</TableCell>
+                <TableCell>{new Date(task.dueDate).toLocaleDateString()}</TableCell>
+                <TableCell>{task.reporter}</TableCell>
+                <TableCell>{task.taskDescription}</TableCell>
+                <TableCell>{task.assignee}</TableCell>
+                <TableCell>{task.status}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

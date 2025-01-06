@@ -185,7 +185,7 @@ export function TaskForm({ onClose }: { onClose: () => void }) {
                     <SelectValue placeholder="담당자를 선택해주세요" />
                   </SelectTrigger>
                   <SelectContent>
-                    {assignees.map((assignee) => (
+                    {assignees?.map((assignee) => (
                       <SelectItem 
                         key={assignee.userName} 
                         value={assignee.userName}

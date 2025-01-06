@@ -65,7 +65,11 @@ export default function LoginModal() {
           태스크 생성 및 관리가 가능한 웹사이트 로그인 페이지입니다.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form 
+          className="space-y-4"
+          aria-label="로그인 폼"
+          onSubmit={handleSubmit}
+        >
           <div className="space-y-2">
             <Label>이메일</Label>
             <Input

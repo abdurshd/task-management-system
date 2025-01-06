@@ -16,9 +16,15 @@ import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from '@
 import { User, UserRole, UserSearchFields } from '@/lib/types/user';
 import { useUserStore } from '@/lib/store/user-store';
 import { useAuthStore } from '@/lib/store/auth-store';
-import { useRouter } from 'next/navigation';
 import { useErrorHandler } from '@/hooks/use-error-handler';
+import {  ChevronDown, ChevronUp } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
+type SortDirection = 'asc' | 'desc' | null;
+type SortConfig = {
+  column: string;
+  direction: SortDirection;
+};
 
 export function UserList() {
     const { user } = useAuthStore();
@@ -30,13 +36,11 @@ export function UserList() {
 
     const [initialRoles, setInitialRoles] = useState<UserRole[]>([]);
     const [selectedRoles, setSelectedRoles] = useState<UserRole[]>([]);
-    const router = useRouter();
 
-    // useEffect(() => {
-    //     if (user?.userRole === 'Viewer') {
-    //         router.push('/dashboard/tasks');
-    //     }
-    // }, [user, router]);
+    const [sortConfig, setSortConfig] = useState<SortConfig>({ 
+      column: '', 
+      direction: null 
+    });
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -99,6 +103,50 @@ export function UserList() {
         setFilters({ searchField: value });
     };
 
+    const handleSort = (column: string) => {
+        let direction: SortDirection = 'asc';
+        
+        if (sortConfig.column === column) {
+            if (sortConfig.direction === 'asc') direction = 'desc';
+            else if (sortConfig.direction === 'desc') direction = null;
+            else direction = 'asc';
+        }
+        
+        setSortConfig({ column, direction });
+    };
+
+    const getSortedUsers = () => {
+        if (!sortConfig.direction) return filteredUsers;
+
+        return [...filteredUsers].sort((a, b) => {
+            const aValue = a[sortConfig.column as keyof typeof a] ?? '';
+            const bValue = b[sortConfig.column as keyof typeof b] ?? '';
+
+            if (sortConfig.direction === 'asc') {
+                return aValue > bValue ? 1 : -1;
+            }
+            return aValue < bValue ? 1 : -1;
+        });
+    };
+
+    const getSortIcon = (column: string) => {
+        const isActive = sortConfig.column === column;
+        return (
+            <div className="ml-2">
+                <div className="flex flex-col">
+                    <ChevronUp className={cn(
+                        "h-3 w-3 -mb-1",
+                        isActive && sortConfig.direction === 'asc' ? "text-[#000000] text-bold" : "text-gray-400"
+                    )} />
+                    <ChevronDown className={cn(
+                        "h-3 w-3",
+                        isActive && sortConfig.direction === 'desc' ? "text-[#000000]  text-bold" : "text-gray-400"
+                    )} />
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className="space-y-4">
             {showControls && (
@@ -140,6 +188,7 @@ export function UserList() {
                 <hr className="border-t-[3px] border-[#949494] w-full p-0 m-0" />
 
                 <div className="flex gap-4">
+                <h3 className="font-bold">사용자 권한</h3>
                 {user?.userRole === 'Admin' && (
                     <>
                         <div className="flex items-center gap-2">
@@ -170,30 +219,55 @@ export function UserList() {
                 </>
             )}
 
-            <Table>
-                <TableHeader>
-                <TableRow>
-                    <TableHead>User Name</TableHead>
-                    <TableHead>User Email</TableHead>
-                    <TableHead>User Role</TableHead>
-                    <TableHead>User Phone</TableHead>
-                    <TableHead>Created At</TableHead>
-                    <TableHead>Last Logged In At</TableHead>
-                </TableRow>
-                </TableHeader>
-                <TableBody>
-                {filteredUsers.map((user) => (
-                    <TableRow key={user.userEmail}>
-                    <TableCell>{user.userName}</TableCell>
-                    <TableCell>{user.userEmail}</TableCell>
-                    <TableCell>{user.userRole}</TableCell>
-                    <TableCell>{user.userPhone}</TableCell>
-                    <TableCell>{new Date(user.createdAt).toLocaleString()}</TableCell>
-                    <TableCell>{new Date(user.lastLoggedInAt).toLocaleString()}</TableCell>
-                    </TableRow>
-                ))}
-                </TableBody>
-            </Table>
+            <hr className="border-t border-[#e2e2e2] w-full p-0 m-0 pb-10" />
+
+            <div className="max-h-[55vh] overflow-y-auto border-b-[2px] border-[#b3b3b3]">
+                <div className="sticky top-0 bg-white z-50">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                {[
+                                    { key: 'userName', label: 'User Name' },
+                                    { key: 'userEmail', label: 'User Email' },
+                                    { key: 'userRole', label: 'User Role' },
+                                    { key: 'userPhone', label: 'User Phone' },
+                                    { key: 'createdAt', label: 'Created At' },
+                                    { key: 'lastLoggedInAt', label: 'Last Logged In At' }
+                                ].map(({ key, label }) => (
+                                    <TableHead key={key}>
+                                        <Button
+                                            variant="ghost"
+                                            onClick={() => handleSort(key)}
+                                            className={cn(
+                                                "flex items-center gap-1 hover:text-[#289b9b] text-[#000000] font-bold",
+                                                sortConfig.column === key && sortConfig.direction && "text-[#289b9b] font-bold"
+                                            )}
+                                        >
+                                            {label}
+                                            {getSortIcon(key)}
+                                        </Button>
+                                    </TableHead>
+                                ))}
+                            </TableRow>
+                        </TableHeader>
+                    </Table>
+                </div>
+
+                <Table>
+                    <TableBody>
+                        {getSortedUsers().map((user) => (
+                            <TableRow key={user.userEmail}>
+                                <TableCell>{user.userName}</TableCell>
+                                <TableCell>{user.userEmail}</TableCell>
+                                <TableCell>{user.userRole}</TableCell>
+                                <TableCell>{user.userPhone}</TableCell>
+                                <TableCell>{new Date(user.createdAt).toLocaleString()}</TableCell>
+                                <TableCell>{new Date(user.lastLoggedInAt).toLocaleString()}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
         </div>
     );
 } 
