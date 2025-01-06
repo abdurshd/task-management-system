@@ -1,6 +1,6 @@
 # 작업 관리 시스템
 
-Next.js 14, TypeScript, shadcn/ui로 구축된 역할 기반 작업 관리 시스템입니다.
+Next.js 15, TypeScript, shadcn/ui로 구축된 역할 기반 작업 관리 시스템입니다.
 
 ## 특징
 
@@ -57,6 +57,21 @@ touch .env.local
 
 ```bash
 npm run dev
+```
+
+테스트를 실행하기 위해서는 playwright 브라우저가 설치되어 있어야 하며, 테스트를 실행할 때 자동으로 설치됩니다. 그러나 테스트를 실행하기 전에 많은 시간을 기다리고 싶지 않다면 브라우저를 수동으로 먼저 설치하는 것이 좋습니다. 다음은 수동 설치 명령입니다:
+
+```sh
+cd frontend
+npx playwright install
+```
+
+E2E 테스트 실행:
+
+```sh
+cd frontend
+npm run test 
+npm run test:ui # 테스트 실행 시 UI 표시
 ```
 
 ## 프로젝트 구조
