@@ -42,7 +42,11 @@ export function TopNav() {
           <span className="text-sm text-[#2d61f5]">{user?.userRole}</span>
           <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+              <Button 
+                variant="ghost" 
+                className="relative h-8 w-8 rounded-full"
+                data-testid="user-menu-button"
+              >
                 <UserRound className="text-black h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>

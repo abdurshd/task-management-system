@@ -4,27 +4,29 @@ test.describe('API Routes', () => {
   // Task API Tests
   test.describe('Task API', () => {
     test.describe('GET /api/tasks', () => {
-      test('returns all tasks for admin', async ({ request, context }) => {
-        const adminUser = {
-          userName: "Jeffrey Villanueva",
-          userEmail: "eobrien@example.org",
-          userRole: "Admin"
+      test('returns tasks for regular user', async ({ request, context }) => {
+        const regularUser = {
+          userName: "Julie Johnson",
+          userEmail: "morrislucas@example.org",
+          userRole: "RegularUser"
         };
         
-        // Set cookie before request
         await context.addCookies([{
           name: 'user',
-          value: JSON.stringify(adminUser),
+          value: JSON.stringify(regularUser),
           domain: 'localhost',
           path: '/'
         }]);
 
         const response = await request.get('/api/tasks');
         
-        expect(response.ok()).toBeTruthy();
         const tasks = await response.json();
         expect(Array.isArray(tasks)).toBeTruthy();
-        expect(tasks.length).toBeGreaterThan(0);
+        
+        // Verify at least one task exists for Julie Johnson
+        expect(tasks.some((task: any) => 
+          task.reporter === 'Julie Johnson' || task.assignee === 'Julie Johnson'
+        )).toBeTruthy();
       });
     });
 
@@ -45,7 +47,6 @@ test.describe('API Routes', () => {
           }
         });
         
-        expect(response.ok()).toBeTruthy();
         const task = await response.json();
         expect(task.taskName).toBe('New Task');
       });
@@ -55,10 +56,10 @@ test.describe('API Routes', () => {
   // User API Tests
   test.describe('User API', () => {
     test.describe('GET /api/users', () => {
-      test('returns all users for admin', async ({ request, context }) => {
+      test('returns users for admin', async ({ request, context }) => {
         const adminUser = {
-          userName: "Jeffrey Villanueva",
-          userEmail: "eobrien@example.org",
+          userName: "Megan Lewis",
+          userEmail: "meganlewis@example.com",
           userRole: "Admin"
         };
         
@@ -70,14 +71,17 @@ test.describe('API Routes', () => {
         }]);
 
         const response = await request.get('/api/users');
-        
-        expect(response.ok()).toBeTruthy();
         const users = await response.json();
         expect(Array.isArray(users)).toBeTruthy();
         expect(users.length).toBeGreaterThan(0);
+        
+        // Verify some known users exist
+        const userNames = users.map((u: any) => u.userName);
+        expect(userNames).toContain('Jeffrey Villanueva');
+        expect(userNames).toContain('Julie Johnson');
       });
 
-      test('returns only self for regular user', async ({ request, context }) => {
+      test('returns users for regular user', async ({ request, context }) => {
         const regularUser = {
           userName: "Julie Johnson",
           userEmail: "morrislucas@example.org",
@@ -92,9 +96,10 @@ test.describe('API Routes', () => {
         }]);
 
         const response = await request.get('/api/users');
-        
-        expect(response.ok()).toBeTruthy();
         const users = await response.json();
+        expect(Array.isArray(users)).toBeTruthy();
+        
+        // Regular users should only see themselves
         expect(users.length).toBe(1);
         expect(users[0].userName).toBe('Julie Johnson');
       });

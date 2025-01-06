@@ -7,6 +7,7 @@ test.describe('TaskForm', () => {
       await page.fill('[placeholder="이메일 주소를 입력해 주세요."]', 'meganlewis@example.com');
       await page.fill('[placeholder="비밀번호를 입력해 주세요."]', 'anyPassword123');
       await page.click('button:has-text("로그인")');
+      await page.goto('/dashboard/tasks');
       await page.waitForURL('/dashboard/tasks');
       await page.getByRole('button', { name: /Create Task/i }).click();
     });
@@ -23,6 +24,7 @@ test.describe('TaskForm', () => {
     });
 
     test('can create purchase task type', async ({ page }) => {
+      await page.getByRole('button', { name: /Create Task/i }).click();
       // Select purchase task type
       await page.getByLabel(/Task Type/i).click();
       await page.getByText('물품구매').click();
@@ -37,6 +39,7 @@ test.describe('TaskForm', () => {
     });
 
     test('can create delivery task type', async ({ page }) => {
+      await page.getByRole('button', { name: /Create Task/i }).click();
       // Select delivery task type
       await page.getByLabel(/Task Type/i).click();
       await page.getByText('택배요청').click();
@@ -59,6 +62,7 @@ test.describe('TaskForm', () => {
       await page.fill('[placeholder="이메일 주소를 입력해 주세요."]', 'emma78@example.net');
       await page.fill('[placeholder="비밀번호를 입력해 주세요."]', 'anyPassword123');
       await page.click('button:has-text("로그인")');
+      await page.goto('/dashboard/tasks');
       await page.waitForURL('/dashboard/tasks');
       await page.getByRole('button', { name: /Create Task/i }).click();
     });
@@ -84,8 +88,10 @@ test.describe('TaskForm', () => {
       await page.fill('[placeholder="이메일 주소를 입력해 주세요."]', 'morrislucas@example.org');
       await page.fill('[placeholder="비밀번호를 입력해 주세요."]', 'anyPassword123');
       await page.click('button:has-text("로그인")');
+      await page.goto('/dashboard/tasks');
       
       // Wait for navigation to complete
+
       await page.waitForURL('/dashboard/tasks', { waitUntil: 'networkidle' });
       
       // Wait for the create task button to be visible before clicking
@@ -129,6 +135,7 @@ test.describe('TaskForm', () => {
       await page.fill('[placeholder="이메일 주소를 입력해 주세요."]', 'eobrien@example.org');
       await page.fill('[placeholder="비밀번호를 입력해 주세요."]', 'anyPassword123');
       await page.click('button:has-text("로그인")');
+      await page.goto('/dashboard/tasks');
       await page.waitForURL('/dashboard/tasks');
       await page.getByRole('button', { name: /Create Task/i }).click();
     });

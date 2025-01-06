@@ -13,7 +13,18 @@ test.describe('Login Modal', () => {
   });
 
   test('shows validation errors for empty fields', async ({ page }) => {
-    await page.getByRole('button', { name: /로그인/i }).click();
+    // First verify button is disabled when fields are empty
+    const loginButton = page.getByRole('button', { name: /로그인/i });
+    await expect(loginButton).toBeDisabled();
+    
+    // Fill in invalid data and verify button becomes enabled
+    await page.fill('[placeholder="이메일 주소를 입력해 주세요."]', 'test');
+    await page.fill('[placeholder="비밀번호를 입력해 주세요."]', 'test');
+    await expect(loginButton).toBeEnabled();
+    
+    // Clear fields and verify validation messages
+    await page.fill('[placeholder="이메일 주소를 입력해 주세요."]', '');
+    await page.fill('[placeholder="비밀번호를 입력해 주세요."]', '');
     
     await expect(page.getByText(/이메일을 입력해주세요/i)).toBeVisible();
     await expect(page.getByText(/비밀번호를 입력해주세요/i)).toBeVisible();
@@ -24,7 +35,7 @@ test.describe('Login Modal', () => {
     await page.fill('[placeholder="비밀번호를 입력해 주세요."]', 'wrongpassword');
     await page.getByRole('button', { name: /로그인/i }).click();
     
-    await expect(page.getByText(/로그인에 실패했습니다/i)).toBeVisible();
+    await expect(page.getByRole('status').getByText(/로그인에 실패했습니다/i)).toBeVisible();
   });
 
   // Role-based Routing Tests
@@ -91,13 +102,15 @@ test.describe('Login Modal', () => {
     
     await page.goto('/dashboard/users');
     
-    // Click user menu button (the rounded button with user icon)
-    await page.locator('button.rounded-full').click();
-      
-    // Click logout in dropdown
-    await page.getByText('Log out').click();
+    // Click user menu button and wait for dropdown
+    await page.getByTestId('user-menu-button').click();
+    await page.waitForSelector('[role="menuitem"]', { state: 'visible' });
     
-    // Confirm logout in dialog
+    // Click logout with a more specific selector and force option
+    await page.getByRole('menuitem', { name: 'Log out' }).click({ force: true });
+    
+    // Wait for and click confirm in dialog
+    await page.waitForSelector('button[role="button"]', { state: 'visible' });
     await page.getByRole('button', { name: 'Log out' }).click();
     
     // Verify redirect to login

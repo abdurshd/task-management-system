@@ -45,7 +45,7 @@ export default function LoginModal() {
     } catch (error) {
       await handleError({
         type: 'AUTH',
-        message: '이메일 주소 또는 비밀번호가 올바르지 않습니다.',
+        message: '로그인에 실패했습니다',
         action: 'TOAST'
       });
     } finally {

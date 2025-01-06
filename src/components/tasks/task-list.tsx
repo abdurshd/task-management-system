@@ -22,6 +22,7 @@ import { useErrorHandler } from '@/hooks/use-error-handler';
 import { ErrorBoundary } from '@/components/errors/error-boundary';
 import { ChevronUp, ChevronDown, CopyCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 type SortDirection = 'asc' | 'desc' | null;
 type SortConfig = {
   column: string;
@@ -260,21 +261,21 @@ export function TaskList() {
             <TableHeader>
               <TableRow>
                 {[
-                  { key: 'taskName', label: 'Task Name' },
-                  { key: 'taskType', label: 'Type' },
-                  { key: 'createdAt', label: 'Created At' },
-                  { key: 'dueDate', label: 'Due Date' },
-                  { key: 'reporter', label: 'Reporter' },
-                  { key: 'taskDescription', label: 'Description' },
-                  { key: 'assignee', label: '담당자(Assignee)' },
-                  { key: 'status', label: '상태(Status)' }
-                ].map(({ key, label }) => (
-                  <TableHead key={key}>
+                  { key: 'taskName', label: 'Task Name', width: '11%' },
+                  { key: 'taskType', label: 'Type', width: '7%' },
+                  { key: 'createdAt', label: 'Created At', width: '15%' },
+                  { key: 'dueDate', label: 'Due Date', width: '16%' },
+                  { key: 'reporter', label: 'Reporter', width: '14%' },
+                  { key: 'taskDescription', label: 'Description', width: '15%' },
+                  { key: 'assignee', label: '담당자(Assignee)', width: '12%' },
+                  { key: 'status', label: '상태(Status)', width: '12%' }
+                ].map(({ key, label, width }) => (
+                  <TableHead key={key} style={{ width }}>
                     <Button
                         variant="ghost"
                         onClick={() => handleSort(key)}
                         className={cn(
-                            "flex items-center gap-1 hover:text-[#289b9b] text-[#000000] font-bold",
+                            "w-full flex items-center justify-center gap-1 hover:text-[#289b9b] text-[#000000] font-bold",
                             sortConfig.column === key && sortConfig.direction && "text-[#289b9b] font-bold"
                         )}
                     >
@@ -297,14 +298,14 @@ export function TaskList() {
           <TableBody>
             {getSortedTasks().map((task) => (
               <TableRow key={`${task.taskName}-${task.createdAt}`}>
-                <TableCell>{task.taskName}</TableCell>
-                <TableCell>{task.taskType}</TableCell>
-                <TableCell>{new Date(task.createdAt).toLocaleDateString()}</TableCell>
-                <TableCell>{new Date(task.dueDate).toLocaleDateString()}</TableCell>
-                <TableCell>{task.reporter}</TableCell>
-                <TableCell>{task.taskDescription}</TableCell>
-                <TableCell>{task.assignee}</TableCell>
-                <TableCell>{task.status}</TableCell>
+                <TableCell className="text-center w-[15%] whitespace-nowrap overflow-hidden text-ellipsis">{task.taskName}</TableCell>
+                <TableCell className="text-center w-[10%] whitespace-nowrap overflow-hidden text-ellipsis">{task.taskType}</TableCell>
+                <TableCell className="text-center w-[12%] whitespace-nowrap overflow-hidden text-ellipsis">{task.createdAt}</TableCell>
+                <TableCell className="text-center w-[12%] whitespace-nowrap overflow-hidden text-ellipsis">{task.dueDate}</TableCell>
+                <TableCell className="text-center w-[12%] whitespace-nowrap overflow-hidden text-ellipsis">{task.reporter}</TableCell>
+                <TableCell className="text-center w-[15%] whitespace-nowrap overflow-hidden text-ellipsis">{task.taskDescription}</TableCell>
+                <TableCell className="text-center w-[12%] whitespace-nowrap overflow-hidden text-ellipsis">{task.assignee}</TableCell>
+                <TableCell className="text-center w-[12%] whitespace-nowrap overflow-hidden text-ellipsis">{task.status}</TableCell>
               </TableRow>
             ))}
           </TableBody>

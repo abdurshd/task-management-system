@@ -28,7 +28,7 @@ import { useEffect, useState } from 'react';
 const baseSchema = z.object({
   taskName: z.string().min(1, '테스크 이름을 입력해주세요'),
   taskType: z.enum(['물품구매', '택배요청']),
-  dueDate: z.string(),
+  dueDate: z.string().min(1, '날짜를 선택해주세요'),
   assignee: z.string().min(1, '담당자를 선택해주세요'),
   reporter: z.string(),
   taskDescription: z.string(),
@@ -74,7 +74,7 @@ export function TaskForm({ onClose }: { onClose: () => void }) {
     defaultValues: {
       taskType: '물품구매' as const,
       taskName: '',
-      dueDate: format(new Date(), 'yyyy-MM-dd'),
+      dueDate: undefined,
       assignee: '',
       reporter: user?.userName || '',
       status: 'Created' as const,

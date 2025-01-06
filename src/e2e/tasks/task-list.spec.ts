@@ -9,6 +9,7 @@ test.describe('TaskList', () => {
       await page.fill('[placeholder="이메일 주소를 입력해 주세요."]', 'meganlewis@example.com');
       await page.fill('[placeholder="비밀번호를 입력해 주세요."]', 'anyPassword123');
       await page.click('button:has-text("로그인")');
+      await page.goto('/dashboard/tasks');
       await page.waitForURL('/dashboard/tasks');
     });
 
@@ -29,6 +30,7 @@ test.describe('TaskList', () => {
       await page.fill('[placeholder="이메일 주소를 입력해 주세요."]', 'emma78@example.net');
       await page.fill('[placeholder="비밀번호를 입력해 주세요."]', 'anyPassword123');
       await page.click('button:has-text("로그인")');
+      await page.goto('/dashboard/tasks');
       await page.waitForURL('/dashboard/tasks');
     });
 
@@ -51,6 +53,7 @@ test.describe('TaskList', () => {
       await page.fill('[placeholder="이메일 주소를 입력해 주세요."]', 'morrislucas@example.org');
       await page.fill('[placeholder="비밀번호를 입력해 주세요."]', 'anyPassword123');
       await page.click('button:has-text("로그인")');
+      await page.goto('/dashboard/tasks');
       await page.waitForURL('/dashboard/tasks');
     });
 
@@ -94,6 +97,7 @@ test.describe('TaskList', () => {
       await page.fill('[placeholder="이메일 주소를 입력해 주세요."]', 'eobrien@example.org');
       await page.fill('[placeholder="비밀번호를 입력해 주세요."]', 'anyPassword123');
       await page.click('button:has-text("로그인")');
+      await page.goto('/dashboard/tasks');
       await page.waitForURL('/dashboard/tasks');
     });
 

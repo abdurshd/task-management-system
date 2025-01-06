@@ -227,19 +227,19 @@ export function UserList() {
                         <TableHeader>
                             <TableRow>
                                 {[
-                                    { key: 'userName', label: 'User Name' },
-                                    { key: 'userEmail', label: 'User Email' },
-                                    { key: 'userRole', label: 'User Role' },
-                                    { key: 'userPhone', label: 'User Phone' },
-                                    { key: 'createdAt', label: 'Created At' },
-                                    { key: 'lastLoggedInAt', label: 'Last Logged In At' }
-                                ].map(({ key, label }) => (
-                                    <TableHead key={key}>
+                                    { key: 'userName', label: 'User Name', width: '15%' },
+                                    { key: 'userEmail', label: 'User Email', width: '25%' },
+                                    { key: 'userRole', label: 'User Role', width: '15%' },
+                                    { key: 'userPhone', label: 'User Phone', width: '15%' },
+                                    { key: 'createdAt', label: 'Created At', width: '15%' },
+                                    { key: 'lastLoggedInAt', label: 'Last Logged In At', width: '15%' }
+                                ].map(({ key, label, width }) => (
+                                    <TableHead key={key} style={{ width }}>
                                         <Button
                                             variant="ghost"
                                             onClick={() => handleSort(key)}
                                             className={cn(
-                                                "flex items-center gap-1 hover:text-[#289b9b] text-[#000000] font-bold",
+                                                "w-full flex items-center justify-center gap-1 hover:text-[#289b9b] text-[#000000] font-bold",
                                                 sortConfig.column === key && sortConfig.direction && "text-[#289b9b] font-bold"
                                             )}
                                         >
@@ -257,12 +257,12 @@ export function UserList() {
                     <TableBody>
                         {getSortedUsers().map((user) => (
                             <TableRow key={user.userEmail}>
-                                <TableCell>{user.userName}</TableCell>
-                                <TableCell>{user.userEmail}</TableCell>
-                                <TableCell>{user.userRole}</TableCell>
-                                <TableCell>{user.userPhone}</TableCell>
-                                <TableCell>{new Date(user.createdAt).toLocaleString()}</TableCell>
-                                <TableCell>{new Date(user.lastLoggedInAt).toLocaleString()}</TableCell>
+                                <TableCell className="text-center w-[15%] whitespace-nowrap overflow-hidden text-ellipsis">{user.userName}</TableCell>
+                                <TableCell className="text-center w-[25%] whitespace-nowrap overflow-hidden text-ellipsis">{user.userEmail}</TableCell>
+                                <TableCell className="text-center w-[15%] whitespace-nowrap overflow-hidden text-ellipsis">{user.userRole}</TableCell>
+                                <TableCell className="text-center w-[15%] whitespace-nowrap overflow-hidden text-ellipsis">{user.userPhone}</TableCell>
+                                <TableCell className="text-center w-[15%] whitespace-nowrap overflow-hidden text-ellipsis">{new Date(user.createdAt).toLocaleString()}</TableCell>
+                                <TableCell className="text-center w-[15%] whitespace-nowrap overflow-hidden text-ellipsis">{new Date(user.lastLoggedInAt).toLocaleString()}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import userList from '@/data/user_list.json';
+import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
   try {
@@ -16,19 +17,19 @@ export async function POST(request: Request) {
     
     const response = NextResponse.json(user);
     
-    // Set the user cookie
+    
     response.cookies.set({
       name: 'user',
       value: JSON.stringify(user),
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'development',
+      httpOnly: false, 
+      secure: false,   
       sameSite: 'lax',
-      path: '/'
+      path: '/',
+      maxAge: 7200
     });
     
     return response;
   } catch (error: unknown) {
-    // console.error(error);
     return new NextResponse(
       JSON.stringify({ error: 'Invalid request' }),
       { status: 400 }
