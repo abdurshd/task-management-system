@@ -219,7 +219,9 @@ export function TaskForm({ onClose }: { onClose: () => void }) {
                   <SelectItem value="택배요청">택배요청</SelectItem>
                 </SelectContent>
               </Select>
-              <FormMessage />
+              <FormMessage>
+                {!field.value && "테스크 유형을 선택해주세요"}
+              </FormMessage>
             </FormItem>
           )}
         />

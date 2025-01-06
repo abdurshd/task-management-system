@@ -65,7 +65,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     if (user?.userRole !== 'Admin' && user?.userRole !== 'PrimeUser') {
       filtered = filtered.filter(task => {
         if (user?.userRole === 'RegularUser') {
-          return task.reporter === user?.userName;
+          return task.reporter === user?.userName || task.assignee === user?.userName;
         }
         return task.assignee === user?.userName;
       });
