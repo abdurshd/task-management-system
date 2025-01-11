@@ -1,80 +1,81 @@
-# 작업 관리 시스템
+# Task Management System
 
-Next.js 15, TypeScript, shadcn/ui로 구축된 역할 기반 작업 관리 시스템입니다.
+A role-based task management system built with Next.js 15, TypeScript, and shadcn/ui.
 
-## 특징
+## Features
 
-- 역할 기반 접근 제어 (관리자, PrimeUser, RegularUser, Viewer)
-- 이메일을 통한 사용자 인증
-- 필터링 및 검색 기능을 갖춘 작업 관리
-- 작업 유형에 따른 동적 폼 렌더링
-- shadcn/ui 컴포넌트를 사용한 반응형 디자인
+- Role-based access control (Admin, PrimeUser, RegularUser, Viewer)
+- User authentication via email
+- Task management with filtering and search capabilities
+- Dynamic form rendering based on task types
+- Responsive design using shadcn/ui components
 
-## 기술 스택
+## Tech Stack
 
 - Next.js 15 (App Router)
 - TypeScript
 - Tailwind CSS
 - shadcn/ui
-- Zustand (상태 관리)
-- React Hook Form (폼 관리)
-- Zod (폼 유효성 검사)
+- Zustand (State Management)
+- React Hook Form (Form Management)
+- Zod (Form Validation)
+- Playwright (E2E Testing)
 
-## 설치
+## Installation
 
-1. 저장소 복제:
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/abdurshd/task-management-system.git
 cd task-management-system
 ```
 
-2. 의존성 설치:
+2. Install dependencies:
 
 ```bash
 npm install
 ```
 
-3. shadcn/ui 컴포넌트 설치:
+3. Install shadcn/ui components:
 
 ```bash
 npx shadcn@latest init
 ```
 
-4. 필요한 shadcn/ui 컴포넌트 추가:
+4. Add the required shadcn/ui components:
 
 ```bash
 npx shadcn@latest add button card dialog form input table select toast
 ```
 
-5. `.env.local` 파일 생성:
+5. Create the `.env.local` file:
 
 ```bash
 touch .env.local
 ```
 
-6. 개발 서버 시작:
+6. Start the development server:
 
 ```bash
 npm run dev
 ```
 
-테스트를 실행하기 위해서는 playwright 브라우저가 설치되어 있어야 하며, 테스트를 실행할 때 자동으로 설치됩니다. 그러나 테스트를 실행하기 전에 많은 시간을 기다리고 싶지 않다면 브라우저를 수동으로 먼저 설치하는 것이 좋습니다. 다음은 수동 설치 명령입니다:
+To run tests, ensure that the Playwright browser is installed. While tests automatically install the required browser, you can install it manually to save time:
 
 ```sh
 cd frontend
 npx playwright install
 ```
 
-E2E 테스트 실행:
+Run E2E tests:
 
 ```sh
 cd frontend
-npm run test 
-npm run test:ui # 테스트 실행 시 UI 표시
+npm run test
+npm run test:ui # Displays UI during test execution
 ```
 
-## 프로젝트 구조
+## Project Structure
 
 ```
 src/
@@ -100,109 +101,109 @@ src/
     └── user_list.json
 ```
 
-## 테스트 케이스
+## Test Cases
 
-### 로그인 페이지
+### Login Page
 
-1. **유효하지 않은 이메일 테스트**
-   - 로그인 페이지로 이동
-   - 존재하지 않는 이메일 입력
-   - 오류 메시지가 표시되는지 확인
+1. **Invalid Email Test**
+   - Navigate to the login page.
+   - Enter a non-existent email.
+   - Verify that an error message is displayed.
 
-2. **유효한 로그인 테스트**
-   - 존재하는 이메일 입력
-   - 성공적으로 로그인되고 올바른 대시보드로 라우팅되는지 확인
+2. **Valid Login Test**
+   - Enter an existing email.
+   - Verify successful login and correct dashboard routing.
 
-3. **필드 유효성 검사 테스트**
-   - 이메일 필드를 비워둠
-   - 로그인 버튼이 비활성화 상태인지 확인
+3. **Field Validation Test**
+   - Leave the email field empty.
+   - Verify that the login button is disabled.
 
-4. **역할 기반 렌더링 테스트**
-   - 관리자 계정으로 로그인
-   - 관리자 대시보드가 표시되는지 확인
+4. **Role-Based Rendering Test**
+   - Log in with an Admin account.
+   - Verify that the Admin dashboard is displayed.
 
-### 사용자 목록 페이지
+### User List Page
 
-1. **역할 필터 테스트**
-   - 관리자 계정으로 로그인
-   - PrimeUser 필터 적용
-   - 필터링된 결과가 올바르게 표시되는지 확인
+1. **Role Filter Test**
+   - Log in with an Admin account.
+   - Apply the PrimeUser filter.
+   - Verify that the filtered results are displayed correctly.
 
-2. **동적 옵션 테스트**
-   - 드롭다운에 사용자가 있는 역할만 표시되는지 확인
+2. **Dynamic Options Test**
+   - Verify that the dropdown shows roles only for existing users.
 
-3. **사용자 검색 테스트**
-   - 특정 사용자 검색
-   - 검색 결과가 올바르게 표시되는지 확인
+3. **User Search Test**
+   - Search for a specific user.
+   - Verify that the search results are accurate.
 
-4. **접근 제어 테스트**
-   - RegularUser로 로그인
-   - 제한된 뷰 접근만 가능한지 확인
+4. **Access Control Test**
+   - Log in as a RegularUser.
+   - Verify that only restricted views are accessible.
 
-### 작업 목록 페이지
+### Task List Page
 
-1. **작업 필터 테스트**
-   - 상태 필터 적용
-   - 필터링된 작업이 올바르게 표시되는지 확인
+1. **Task Filter Test**
+   - Apply a status filter.
+   - Verify that the filtered tasks are displayed correctly.
 
-2. **역할 기반 가시성 테스트**
-   - Viewer로 로그인
-   - 할당된 작업만 표시되는지 확인
+2. **Role-Based Visibility Test**
+   - Log in as a Viewer.
+   - Verify that only assigned tasks are visible.
 
-3. **작업 검색 테스트**
-   - 특정 작업 검색
-   - 검색 결과가 올바르게 표시되는지 확인
+3. **Task Search Test**
+   - Search for a specific task.
+   - Verify that the search results are accurate.
 
-4. **작업 생성 버튼 테스트**
-   - 역할에 따라 버튼 가시성이 올바른지 확인
+4. **Task Creation Button Test**
+   - Verify button visibility based on roles.
 
-### 작업 생성
+### Task Creation
 
-1. **역할 기반 접근 테스트**
-   - 역할에 따라 폼 접근 가능 여부 확인
+1. **Role-Based Access Test**
+   - Verify form access based on roles.
 
-2. **필드 유효성 검사 테스트**
-   - 빈 필드로 폼 제출
-   - 유효성 검사 동작 확인
+2. **Field Validation Test**
+   - Submit the form with empty fields.
+   - Verify that validation errors are shown correctly.
 
-3. **동적 필드 테스트**
-   - 다른 작업 유형 선택
-   - 폼 필드가 올바르게 업데이트되는지 확인
+3. **Dynamic Fields Test**
+   - Select different task types.
+   - Verify that the form fields update correctly.
 
-4. **할당 대상 역할 확인 테스트**
-   - 역할에 따라 올바른 할당 대상 옵션 표시 여부 확인
+4. **Assignment Role Verification Test**
+   - Verify that the correct assignment options are shown based on roles.
 
-## 테스트 실행 방법
+## Running Tests
 
-1. Cypress와 같은 E2E 테스트 도구를 설치합니다:
+1. Install an E2E testing tool like Cypress:
 
 ```bash
 npm install cypress
 ```
 
-2. Cypress를 실행하여 테스트를 시작합니다:
+2. Launch Cypress to run tests:
 
 ```bash
 npx cypress open
 ```
 
-3. Cypress UI에서 원하는 테스트 파일을 선택하여 실행합니다.
+3. Select the desired test file in the Cypress UI to execute.
 
-4. 모든 테스트 케이스가 성공적으로 실행되는지 확인합니다.
+4. Verify that all test cases pass successfully.
 
-## API 경로
+## API Routes
 
-응용 프로그램은 데이터를 처리하기 위해 Next.js API 경로를 사용합니다:
+The application uses Next.js API routes for data handling:
 
-- `/api/auth/login` - 사용자 인증 처리
-- `/api/users` - 사용자 관리
-- `/api/tasks` - 작업 관리
+- `/api/auth/login` - Handles user authentication
+- `/api/users` - Manages users
+- `/api/tasks` - Manages tasks
 
-## 상태 관리
+## State Management
 
-Zustand를 사용하여 다음과 같은 상태 저장소를 관리합니다:
+Zustand is used to manage the following state stores:
 
-- **AuthStore**: 사용자 인증 및 역할 관리
-- **TaskStore**: 작업 목록 및 작업 관리
-- **UserStore**: 사용자 목록 및 사용자 관리
+- **AuthStore**: Handles user authentication and roles
+- **TaskStore**: Manages task lists and operations
+- **UserStore**: Manages user lists and operations
 
